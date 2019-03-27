@@ -1,0 +1,48 @@
+.header-border{
+    text-align: center;
+    padding: 100px 0;
+}
+
+.news-block{
+    padding: 0 0 100px 0;
+    display: flex;
+
+    &.reverse{
+        flex-direction: row-reverse;
+    }
+
+    .news-block__image{
+        width: 50%;
+
+        img{
+            width: 100%;
+        }
+    }
+
+    .news-block__content{
+        width: 50%;
+        position: relative;
+
+        .news-block__content--inner{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+
+            h2,
+            h4{
+                margin: 0;
+            }
+        
+            h4{
+                color: $orange;
+                font-style: italic;
+            }
+        }
+    }
+}
+
+.loader-wrap{
+    text-align: center;
+}
