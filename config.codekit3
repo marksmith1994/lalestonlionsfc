@@ -54,41 +54,6 @@
 		"oAP": "/css/site.css.map",
 		"oF": 0
 		},
-	"/elements/banner_fileset.php": {
-		"cB": 0,
-		"ft": 8192,
-		"oA": 0,
-		"oAP": "/elements/banner_fileset.php",
-		"oF": 0
-		},
-	"/elements/footer.php": {
-		"cB": 0,
-		"ft": 8192,
-		"oA": 0,
-		"oAP": "/elements/footer.php",
-		"oF": 0
-		},
-	"/elements/header.php": {
-		"cB": 0,
-		"ft": 8192,
-		"oA": 0,
-		"oAP": "/elements/header.php",
-		"oF": 0
-		},
-	"/elements/icons.php": {
-		"cB": 0,
-		"ft": 8192,
-		"oA": 0,
-		"oAP": "/elements/icons.php",
-		"oF": 0
-		},
-	"/elements/quad-block.php": {
-		"cB": 0,
-		"ft": 8192,
-		"oA": 0,
-		"oAP": "/elements/quad-block.php",
-		"oF": 0
-		},
 	"/footer.php": {
 		"cB": 0,
 		"ft": 8192,
