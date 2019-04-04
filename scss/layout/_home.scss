@@ -24,10 +24,18 @@
         left: 50%;
         transform: translate(-50%, -50%);
         text-align: center;
+        width: 75%;
 
         h1{
-            font-size: em-calc(60);
+            font-size: em-calc(32);
             color: white;
+            @media #{$small} {
+                font-size: em-calc(45);
+            }
+
+            @media #{$medium} {
+                font-size: em-calc(60);
+            }
         }
 
         .show{

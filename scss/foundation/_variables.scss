@@ -126,16 +126,14 @@ $success-color: #5da423;
 // Media Queries
 $xsmall-screen: 420px;
 $small-screen: 600px;
-$medium-screen: 950px;
+$medium-screen: 780px;
 $large-screen: 1080px;
 $xlarge-screen: 1200px;
 $xxlarge-screen: 1460px;
 
-
 // $screen: "only screen";
 $xsmall: "only screen and (min-width: #{$xsmall-screen})";
 $small: "only screen and (min-width: #{$small-screen})";
-$medium-down: "only screen and (max-width: #{$medium-screen})";
 $medium: "only screen and (min-width: #{$medium-screen})";
 $large: "only screen and (min-width: #{$large-screen})";
 $xlarge: "only screen and (min-width: #{$xlarge-screen})";
