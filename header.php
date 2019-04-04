@@ -98,7 +98,6 @@
                 </nav>
 
                 <div class="burger-container">
-                    <span>Menu</span>
                     <div>
                         <div class="bar1"></div>
                         <div class="bar2"></div>
