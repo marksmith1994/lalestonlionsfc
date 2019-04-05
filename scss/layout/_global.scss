@@ -149,9 +149,11 @@ body {
 		li {
 			margin: 0 15px 0 0;
 
-			&.nav-selected {
+			&.nav-selected,
+			&:hover{
 				a {
 					border-bottom: 1px solid white;
+					transition: all 0.3s ease-in-out;
 				}
 			}
 
@@ -162,6 +164,8 @@ body {
 				font-size: 17px;
 				letter-spacing: 1px;
 			}
+
+
 		}
 	}
 }
@@ -172,9 +176,13 @@ body {
 
 .scroll-down {
 	position: absolute;
-	bottom: 10%;
+	bottom: 20%;
 	left: 50%;
-	transform: translate(-50%, -10%);
+	transform: translate(-50%, -20%);
+	@media #{$medium} {
+		transform: translate(-50%, -10%);
+		bottom: 10%;
+	}
 }
 
 #section04 a span {

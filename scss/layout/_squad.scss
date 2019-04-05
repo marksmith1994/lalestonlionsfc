@@ -7,8 +7,7 @@
     padding: 25px 15px;
 
     @media #{$medium} {
-        padding: 100px 0;
-
+        padding:0 0 100px 0;
     }
 }
 
@@ -17,14 +16,22 @@
     background-color: $orange;
     height: 300px;
     position: relative;
-    margin-bottom: 75px;
     cursor: pointer;
+
+    @media #{$medium} {
+        margin-bottom: 75px;
+    }
     
     .player-details{
         position: absolute;
-        top: calc(100% - 70px);
+        top: calc(100% - 50px);
         left: 15px;
         transition: all 0.3s ease-in-out;
+
+        @media #{$medium} {
+            top: calc(100% - 70px);
+
+        }
     }
 
     .position,

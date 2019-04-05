@@ -6,17 +6,21 @@
 <div class="hero">
         
     <div class="hero--content">
-    
         <h1><span class="show">MEET</span> <span class="show">THE</span> <span class="show">LIONS</span></h1>
-    
-
     </div>
+
     <section id="section04" class="scroll-down">
-            <a href="#body"><span></span></a>
+        <a href="#body"><span></span></a>
     </section>
+
 </div>
 
 <div class="team-container">
+    
+    <div class="header-border black">
+        <span></span>
+        <h2><?php echo $c->getCollectionName(); ?></h2>
+    </div>
 
     <div class="row">
 

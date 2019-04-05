@@ -50,7 +50,7 @@
         <?php } ?>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css?family=Viga" rel="stylesheet">
-        <link rel="stylesheet" href="<?php echo $this->getThemePath(); ?>/css/site.css">
+        <link rel="stylesheet" href="<?php echo $this->getThemePath(); ?>/css/site.css?v1.01">
 
     </head>
     <body>

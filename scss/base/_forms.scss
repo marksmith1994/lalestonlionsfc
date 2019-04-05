@@ -19,7 +19,7 @@ form,
     textarea{
         height: 50px;
         width: 100%;
-        border: 1px solid black;
+        border: 4px solid black;
         padding: 30px 15px;
         resize: none;
         @include bodyfont();
@@ -27,7 +27,14 @@ form,
         
         &:focus{
             outline: none;
+            border: 4px solid $orange;
+            transition: border 0.3s ease-in-out;
         }
+
+    }
+
+    textarea{
+        padding: 15px;
     }
 
     .field.error{

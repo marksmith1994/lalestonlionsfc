@@ -89,6 +89,13 @@
 		"oAP": "/get-latest.php",
 		"oF": 0
 		},
+	"/get-posts.php": {
+		"cB": 0,
+		"ft": 8192,
+		"oA": 0,
+		"oAP": "/get-posts.php",
+		"oF": 0
+		},
 	"/header.php": {
 		"cB": 0,
 		"ft": 8192,
@@ -530,6 +537,20 @@
 		"ft": 8192,
 		"oA": 0,
 		"oAP": "/news_article.php",
+		"oF": 0
+		},
+	"/page_types/home.php": {
+		"cB": 0,
+		"ft": 8192,
+		"oA": 0,
+		"oAP": "/page_types/home.php",
+		"oF": 0
+		},
+	"/page_types/news.php": {
+		"cB": 0,
+		"ft": 8192,
+		"oA": 0,
+		"oAP": "/page_types/news.php",
 		"oF": 0
 		},
 	"/scss/base/_buttons.scss": {

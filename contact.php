@@ -1,4 +1,9 @@
-   <div class="hero">
+<?php 
+    defined('C5_EXECUTE') or die("Access Denied.");
+    $this->inc('elements/header.php');    
+?>
+    
+  <div class="hero">
         
         <div class="hero--content">
 
@@ -14,7 +19,8 @@
 
     <div id="body" class="contact-body">
 
-        <div class="header-border">
+        <div class="header-border black">
+            <span></span>
             <h2>CONTACT</h2>
         </div>
 
@@ -85,7 +91,7 @@
                         <div class="small-12 medium-6 column medium-centered">
 
                             <div class="field">
-                                <button class="button white" type="text" >Send</button>
+                                <button class="button white" type="submit" >Send</button>
                             </div>
 
                         </div>
@@ -108,3 +114,7 @@
 
     </div>
 
+    <?php 
+    $this->inc('elements/footer.php');    
+?>
+    

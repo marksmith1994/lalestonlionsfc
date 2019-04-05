@@ -1,9 +1,15 @@
 <?php 
     defined('C5_EXECUTE') or die("Access Denied.");
     $this->inc('elements/header.php'); 
+
+    if($c->getAttribute("banner_image")){
+        $bannerImage = $c->getAttribute("banner_image")->getRelativePath();
+    }else{
+        $banenrImage = '';
+    }
 ?>
 
-<div class="hero">
+<div class="hero" style="background-image: url('<?php echo $bannerImage?>')">
         
     <div class="hero--content">
     
@@ -12,8 +18,13 @@
     </div>
         
     <section id="section04" class="scroll-down">
-            <a href="#body"><span></span></a>
-        </section>
+        <a href="#body"><span></span></a>
+    </section>
+</div>
+
+<div class="header-border">
+    <span></span>
+    <h2><?php echo $c->getCollectionName(); ?></h2>
 </div>
 
 <?php 

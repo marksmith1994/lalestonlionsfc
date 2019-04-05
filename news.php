@@ -20,6 +20,7 @@
     <div class="news-container">
 
         <div class="header-border">
+            <span></span>
             <h2>NEWS</h2>
         </div>
 
@@ -32,7 +33,7 @@
         </div>
 
         <div class="load-more">                   
-            <button class="load-more__btn button blue-white" data-nextpage="1">Load more</button>  
+            <button class="load-more__btn button black" data-nextpage="1">Load more</button>  
         </div>
 
     </div>
