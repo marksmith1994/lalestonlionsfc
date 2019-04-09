@@ -32,7 +32,7 @@ class TeamMemberBlockController extends BlockController
 		if ( $this->fID > 0 ) {
 			$image = $this->getFileObject()->getRelativePath();
 		} else {
-			$image = 'http://placehold.it/500x400';
+        	$image =  '/themes/laleston_lions/images/player-placeholder.jpg';
 		}
 
 		return $image;

@@ -1,13 +1,19 @@
 <?php 
     defined('C5_EXECUTE') or die("Access Denied.");
     $this->inc('elements/header.php'); 
+
+    if($c->getAttribute("banner_image")){
+        $bannerImage = $c->getAttribute("banner_image")->getRelativePath();
+    }else{
+        $banenrImage = '';
+    }
 ?>
 
-<div class="hero<?php if($c->getCollectionTypeName() == 'Home'){ echo ' home'; } ?>">
+<div class="hero <?php if($c->getCollectionTypeName() == 'Home'){ echo ' home'; } ?>" style="background-image: url('<?php echo $bannerImage?>')">
         
     <div class="hero--content">
 
-        <h1><span class="show">THE</span> <span class="show">HOME</span> <span class="show">OF</span> <span class="show">LALESTON</span> <span class="show">LIONS</span></h1>
+        <!-- <h1><span class="show">THE</span> <span class="show">HOME</span> <span class="show">OF</span> <span class="show">LALESTON</span> <span class="show">LIONS</span></h1> -->
 
     </div>
 

@@ -7,7 +7,7 @@
 
         <div class="row">
 
-            <div class="small-12 medium-7 large-5 column large-centered">
+            <div class="small-12 medium-7 large-5 column medium-centered">
                 <p class="footer-text"><?php echo  "&copy;" . date("Y ") . SITE .  " All Rights Reserved";?></p>
             </div>
 
@@ -15,7 +15,7 @@
 
         <div class="row">
 
-            <div class="small-12 medium-7 large-5 column large-centered">
+            <div class="small-12 medium-7 large-5 column medium-centered">
                 <a  href="https://www.instagram.com/lalestonlionsfc/" target="_blank">
                     <svg class="icon icon-instagram">
                         <use xlink:href="#icon-instagram"></use>

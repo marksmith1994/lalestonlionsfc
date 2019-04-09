@@ -1,7 +1,42 @@
+
+.icon{
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+}
+
 .hero{
     background-color: $orange;
-    height: 100vh;
+    position: relative;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    min-height: 300px;
+    
+    &.home{
+        background-size: 100%;
+        min-height: 400px;
+        background-color: #da6717;
+    }
+    @media #{$small} {    
+        min-height: 450px;
+        
+        &.home{
+            min-height: 600px;
+        }
 
+    }
+    @media #{$medium} {
+        min-height: 600px;
+        
+        &.home{
+            min-height: 750px;
+        }
+    }
 
     &--content{
         position: absolute;
@@ -9,10 +44,19 @@
         left: 50%;
         transform: translate(-50%, -50%);
         text-align: center;
+        width: 75%;
+        z-index: 2;
 
         h1{
-            font-size: em-calc(60);
+            font-size: em-calc(32);
             color: white;
+            @media #{$small} {
+                font-size: em-calc(45);
+            }
+
+            @media #{$medium} {
+                font-size: em-calc(60);
+            }
         }
 
         .show{

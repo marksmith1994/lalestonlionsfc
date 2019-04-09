@@ -1,7 +1,11 @@
 h1{
     @include headerfont();
     line-height: 1.25;
-    font-size: em-calc(32);
+    font-size: em-calc(28);
+
+    @media #{$small} {
+        font-size: em-calc(32);
+    }
 
     @media #{$medium} {
         font-size: em-calc(36);

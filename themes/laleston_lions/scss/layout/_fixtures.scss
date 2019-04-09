@@ -1,0 +1,18 @@
+.league-info{
+    margin: 25px 0;
+    text-align: center;
+
+    .name{
+        font-style: italic;
+        color: $orange;
+    }
+
+    .position{
+        font-size: em-calc(40);
+        color: $orange;
+
+        @media #{$medium} {
+            font-size: em-calc(60);
+        }
+    }
+}

@@ -2,7 +2,12 @@
     background-color: black;
 
     .header-border{
-        padding: 100px 0;
+        padding: 25px 0;
+
+        @media #{$medium} {
+            padding: 100px 0;
+        }
+
         h2{
             color: white;
             text-align: center;
@@ -23,8 +28,16 @@
     }
 
     .football-vector{
-        padding: 200px 0;
         width: 100%;
         text-align: center;
+        padding: 50px 0;
+
+        @media #{$small} {
+            padding: 100px 0;
+        }
+
+        @media #{$medium} {
+            padding: 200px 0;
+        }
     }
 }

@@ -1,4 +1,12 @@
-   <div class="hero">
+<?php
+if($c->getAttribute("banner_image")){
+        $bannerImage = $c->getAttribute("banner_image")->getRelativePath();
+    }else{
+        $banenrImage = '';
+    }
+?>
+
+<div class="hero" style="background-image: url('<?php echo $bannerImage?>')">
         
         <div class="hero--content">
 
