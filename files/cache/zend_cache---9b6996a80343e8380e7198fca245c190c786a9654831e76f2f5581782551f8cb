@@ -1,0 +1,27 @@
+O:8:"stdClass":4:{s:7:"version";s:7:"5.6.3.5";s:5:"notes";s:2157:"
+
+                <h2>5.6.3.5 Release Notes</h2>
+
+                <h3>Huge Maintenance Update</h3>
+                <p>
+                    Version 5.6.2 and 5.6.2.1 introduce a lot of bug fixes and a few feature improvements, including automated jobs, permissions bug fixes, lots of translation fixes, and more.
+                    They are highly recommended for all users of concrete5.
+                </p>
+                <p>
+                    Version 5.6.3 and its updates introduce a lot of bug fixes, security improvements, and a large number of multilingual website improvements.
+                    They are highly recommended for all users of concrete5.
+                </p>
+                <p>
+                    As always, backup your data and site before running the upgrade live.
+                </p>
+
+                <h3><a href="http://www.concrete5.org/documentation/background/version_history/5-6-2-release-notes/" target="_blank">Full 5.6.2 Release Notes</a></h3>
+                <h3><a href="http://www.concrete5.org/documentation/background/version_history/5-6-2-1-release-notes/" target="_blank">Full 5.6.2.1 Release Notes</a></h3>
+                <h3><a href="http://www.concrete5.org/documentation/background/version_history/5-6-3-release-notes/" target="_blank">Full 5.6.3 Release Notes</a></h3>
+                <h3><a href="http://www.concrete5.org/documentation/background/version_history/5-6-3-1-release-notes/" target="_blank">Full 5.6.3.1 Release Notes</a></h3>
+                <h3><a href="http://www.concrete5.org/documentation/background/version_history/5-6-3-2/" target="_blank">Full 5.6.3.2 Release Notes</a></h3>
+                <h3><a href="http://www.concrete5.org/documentation/background/version_history/5-6-3-3/" target="_blank">Full 5.6.3.3 Release Notes</a></h3>
+                <h3><a href="http://www.concrete5.org/documentation/background/version_history/5-6-3-4-release-notes/" target="_blank">Full 5.6.3.4 Release Notes</a></h3>
+                <h3><a href="https://documentation.concrete5.org/developers/background/version-history/5635" target="_blank">Full 5.6.3.5 Release Notes</a></h3>
+
+                ";s:3:"url";s:46:"http://www.concrete5.org/download_file/-/96084";s:4:"date";s:10:"2017-06-09";}

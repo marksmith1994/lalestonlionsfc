@@ -1,0 +1,22 @@
+.header-border{
+    text-align: center;
+    padding: 100px 0;
+}
+
+.news-block{
+    padding: 0 0 100px 0;
+
+    img{
+        width: 100%;
+    }
+    
+    h2,
+    h4{
+        margin: 0;
+    }
+
+    h4{
+        color: $orange;
+        font-style: italic;
+    }
+}

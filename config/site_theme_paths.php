@@ -16,6 +16,7 @@ defined('C5_EXECUTE') or die(_("Access Denied."));
 $v = View::getInstance();
 
 $v->setThemeByPath('/login', "yourtheme");
+$v->setThemeByPath('/page_forbidden', "yourtheme");
 $v->setThemeByPath('/register', "yourtheme");
 
 */

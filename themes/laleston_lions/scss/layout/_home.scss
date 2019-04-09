@@ -1,0 +1,63 @@
+.hero{
+    background-color: $orange;
+    height: 100vh;
+
+
+    &--content{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+
+        h1{
+            font-size: em-calc(60);
+            color: white;
+        }
+
+        .show{
+            opacity: 0;
+            transition: 0.3s all ease-in-out;
+
+            &:nth-child(1){
+                .loaded &{
+                    transition: 0.3s all ease-in-out;
+                    opacity: 1;
+                    transition-delay: 0.2s;
+                }
+            }
+
+            &:nth-child(2){
+                .loaded &{
+                    transition: 0.3s all ease-in-out;
+                    opacity: 1;
+                    transition-delay: 0.4s;
+                }
+            }
+
+            &:nth-child(3){
+                .loaded &{
+                    transition: 0.3s all ease-in-out;
+                    opacity: 1;
+                    transition-delay: 0.6s;
+                }
+            }
+
+            &:nth-child(4){
+                .loaded &{
+                    transition: 0.3s all ease-in-out;
+                    opacity: 1;
+                    transition-delay: 0.8s;
+                }
+            }
+
+            &:nth-child(5){
+                .loaded &{
+                    transition: 0.3s all ease-in-out;
+                    opacity: 1;
+                    transition-delay: 1s;
+                }
+            }
+        }
+    }
+}
