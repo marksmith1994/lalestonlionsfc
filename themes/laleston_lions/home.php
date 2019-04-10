@@ -9,7 +9,9 @@
     }
 ?>
 
-<div class="hero <?php if($c->getCollectionTypeName() == 'Home'){ echo ' home'; } ?>" style="background-image: url('<?php echo $bannerImage?>')">
+<div class="hero <?php if($c->getCollectionTypeName() == 'Home'){ echo ' home'; } ?>"">
+    
+    <img src="<?php echo $bannerImage?>" alt="homepage background" />
         
     <div class="hero--content">
 
@@ -17,9 +19,6 @@
 
     </div>
 
-    <section id="section04" class="scroll-down">
-        <a href="#body"><span></span></a>
-    </section>
     
 </div>
 

@@ -1,4 +1,4 @@
-.league-info{
+    .league-info{
     margin: 25px 0;
     text-align: center;
 
@@ -13,6 +13,56 @@
 
         @media #{$medium} {
             font-size: em-calc(60);
+        }
+    }
+}
+
+.month-seperator{
+    background-color: black;
+    position: relative;
+    height: 10px;
+    margin: 150px 0 0;
+
+    span{
+        color: white;
+        background-color: black;
+        width: 100px;
+        height: 89px;
+        position: absolute;
+        display: block;
+        padding: 25px 15px;
+        text-align: center;
+        @include headerfont();
+
+        p{
+            font-size: 20px;
+            margin: 0;
+            line-height: 30px;
+            font-weight: bold;
+        }
+
+        &::before{
+            content: ' ';
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 50px 50px 0 0;
+            border-color: #000000 transparent transparent transparent;
+            position: absolute;
+            bottom: -50px;            
+            left: 0;
+        }
+
+        &::after{
+            content: ' ';
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 50px 50px 0;
+            border-color: transparent #000000 transparent transparent;
+            position: absolute;
+            bottom: -50px;    
+            right: 0;        
         }
     }
 }

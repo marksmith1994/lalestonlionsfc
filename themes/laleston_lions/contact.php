@@ -11,30 +11,31 @@
 
 <div class="hero" style="background-image: url('<?php echo $bannerImage?>')">
         
-        <div class="hero--content">
+    <div class="hero--content">
 
-            <h1><span class="show">CONTACT</span> <span class="show">THE</span> <span class="show">LIONS</span></h1>
-
-        </div>
-
-        <section id="section04" class="scroll-down">
-            <a href="#body"><span></span></a>
-        </section>
+        <h1><span class="show">CONTACT</span> <span class="show">THE</span> <span class="show">LIONS</span></h1>
 
     </div>
 
-    <div id="body" class="contact-body">
+</div>
 
+    <div id="body" class="contact-body global-margin">
+
+        <?php
+        /*
         <div class="header-border black">
             <span></span>
-            <h2>CONTACT</h2>
+            <h2><?php echo $c->getCollectionName(); ?></h2>
         </div>
+        */
+        ?>
 
         <div class="contact-form">
 
-            <h3>FANCY A FRIENDLY?<br />
-            SPONSORSHIP OPPORTUNITY?<br />
-            GET IN TOUCH.</h3>
+            <?php 
+                $a = new Area('Introduction');
+                $a->display($c);
+            ?>
 
             <div class="small-12 medium-10 large-8 column medium-centered">
 
@@ -108,10 +109,12 @@
 
             </div>
 
-            <h3>ADDRESS: 26, TYNTON RD, CF31 4JF</h3>
-            <h3>EMAIL: <a href="mailto:lalestonlions@gmail.com" >LALESTONLIONS@GMAIL.COM</a></h3>
-            <h3>TEL: <a href="tel:07525081817" >07525081817</a></h3>
-            
+            <?php 
+                $a = new Area('Contact Details');
+                $a->display($c);
+            ?>
+
+
             <div class="football-vector">
                 <img src="<?php echo $this->getThemePath(); ?>/images/ball-vector.png" />
             </div>

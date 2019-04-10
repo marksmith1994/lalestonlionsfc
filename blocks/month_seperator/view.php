@@ -1,5 +1,5 @@
 <?php defined('C5_EXECUTE') or die(_("Access Denied.")); ?>
 
 <div class="month-seperator">
-    <span><?php echo $month ;?></span>
+    <span><p><?php echo $month ;?></p><p><?php echo $year ;?></p></span>
 </div>

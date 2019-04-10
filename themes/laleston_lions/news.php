@@ -17,19 +17,18 @@
 
         </div>
 
-        <section id="section04" class="scroll-down">
-            <a href="#body"><span></span></a>
-        </section>
+</div>
 
-    </div>
+    <div class="news-container global-margin">
 
-    <div class="news-container">
-
-        <div class="header-border">
+        <?php
+        /*
+        <div class="header-border black">
             <span></span>
-            <h2>NEWS</h2>
+            <h2><?php echo $c->getCollectionName(); ?></h2>
         </div>
-
+        */
+        ?>
         <div class="row">
             
             <div class="small-12 large-centered columns">

@@ -17,16 +17,19 @@
     background-size: cover;
     min-height: 300px;
     
+    img{
+        width: 100%;
+    }
+
     &.home{
-        background-size: 100%;
-        min-height: 400px;
+        min-height: auto;
         background-color: #da6717;
     }
     @media #{$small} {    
         min-height: 450px;
         
         &.home{
-            min-height: 600px;
+            min-height: auto;
         }
 
     }
@@ -34,7 +37,8 @@
         min-height: 600px;
         
         &.home{
-            min-height: 750px;
+            min-height: auto;
+
         }
     }
 

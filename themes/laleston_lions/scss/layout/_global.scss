@@ -6,6 +6,19 @@ body {
 	position: static
 }
 
+.global-margin{
+	padding: 25px 15px;
+
+	@media #{$small} {	
+		padding: 50px 15px;
+	}
+
+	@media #{$medium} {
+		padding: 100px 15px;
+	}
+
+}
+
 .burger-container {
 	display: flex;
 	right: 15px;
@@ -159,7 +172,7 @@ body {
 
 			a {
 				text-transform: uppercase;
-				@include bodyfont();
+				@include headerfont();
 				color: white;
 				font-size: 17px;
 				letter-spacing: 1px;

@@ -17,6 +17,9 @@
 		<field name="month" type="X2">
 		</field>
 
+		<field name="year" type="X2">
+		</field>
+		
 	</table>
 
 </schema>

@@ -17,9 +17,6 @@
 
     </div>
         
-    <section id="section04" class="scroll-down">
-        <a href="#body"><span></span></a>
-    </section>
 </div>
 
 <div class="header-border">

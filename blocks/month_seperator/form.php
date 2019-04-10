@@ -13,8 +13,13 @@
             <fieldset>
 
                 <div class="control-group">
-                    <?php echo $form->label('month', t('Month (Short hande.g. Aug)')); ?>
+                    <?php echo $form->label('month', t('Month (Short hand.g. Aug)')); ?>
                     <div class="controls"><?php echo $form->text('month', $month, array('style' => 'width:100%; height:30px;')); ?></div>
+                </div>
+
+                <div class="control-group">
+                    <?php echo $form->label('year', t('Year')); ?>
+                    <div class="controls"><?php echo $form->text('year', $year, array('style' => 'width:100%; height:30px;')); ?></div>
                 </div>
 
             </fieldset>

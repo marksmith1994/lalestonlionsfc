@@ -1209,16 +1209,6 @@
 		"sC": 3,
 		"tS": 0
 		},
-	"/main.css": {
-		"aP": 1,
-		"bl": 0,
-		"ft": 16,
-		"ma": 0,
-		"oA": 0,
-		"oAP": "/main-min.css",
-		"oF": 0,
-		"oS": 3
-		},
 	"/news.php": {
 		"cB": 0,
 		"ft": 8192,
@@ -1926,16 +1916,6 @@
 		"opt": 0,
 		"oT": 1,
 		"q": 100
-		},
-	"/typography.css": {
-		"aP": 1,
-		"bl": 0,
-		"ft": 16,
-		"ma": 0,
-		"oA": 0,
-		"oAP": "/typography-min.css",
-		"oF": 0,
-		"oS": 3
 		},
 	"/view.php": {
 		"cB": 0,
