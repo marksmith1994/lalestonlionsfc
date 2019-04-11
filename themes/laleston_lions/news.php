@@ -21,14 +21,6 @@
 
     <div class="news-container global-margin">
 
-        <?php
-        /*
-        <div class="header-border black">
-            <span></span>
-            <h2><?php echo $c->getCollectionName(); ?></h2>
-        </div>
-        */
-        ?>
         <div class="row">
             
             <div class="small-12 large-centered columns">

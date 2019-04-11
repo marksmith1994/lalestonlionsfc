@@ -1,7 +1,11 @@
 .header-border{
     text-align: center;
-    padding: 25px 0;
+    padding: 15px;
     position: relative;
+
+    @media #{$small} {
+        padding: 25px 0;
+    }
 
     @media #{$medium} {
         padding: 100px 0;

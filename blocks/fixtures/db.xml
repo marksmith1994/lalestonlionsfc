@@ -14,7 +14,7 @@
 			<default value="0" />
 		</field>
 
-		<field name="type" type="C" size="255">
+		<field name="game_type" type="C" size="255">
 		</field>
 		
 		<field name="fixture" type="X2">
@@ -23,7 +23,7 @@
 		<field name="date" type="X2">
 		</field>
 				
-		<field name="lalResults" type="X2">
+		<field name="lalResult" type="X2">
 		</field>
 
 		<field name="secondResult" type="X2">

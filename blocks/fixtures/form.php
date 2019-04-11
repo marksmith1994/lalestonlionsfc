@@ -5,7 +5,7 @@
     Loader::element('editor_init');
     Loader::element('editor_config', array('editor_mode' => 'CUSTOM'));
 
-    $gameType = array('cup' => 'Cup','friendly' => 'Friendly', 'league' => 'League');
+    $gameType = array('Cup Match' => 'Cup','Friendly' => 'Friendly', 'League Match' => 'League');
 ?>
 
 <div class="ccm-ui">
@@ -17,9 +17,9 @@
             <fieldset>
 
                 <div class="control-group">
-                    <?php echo $form->label('gameType', t('Type of fixture?')); ?>
+                    <?php echo $form->label('game_type', t('Type of fixture?')); ?>
                     <div class="controls">
-                        <?php echo $form->select('gameType', $gameType, $type); ?>
+                        <?php echo $form->select('game_type', $gameType, $game_type); ?>
                     </div>
                 </div>
 
@@ -40,7 +40,9 @@
 
                 <div class="control-group">
                     <?php echo $form->label('lalResult', t('Laleston Lions Score?')); ?>
-                    <div class="controls"><?php echo $form->text('lalResult', $lalResult, array('style' => 'width:100%; height:30px;')); ?></div>
+                    <div class="controls">
+                        <?php echo $form->text('lalResult', $lalResult, array('style' => 'width:100%; height:30px;')); ?>
+                    </div>
                 </div>
 
                 <div class="control-group">
