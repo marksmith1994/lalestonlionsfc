@@ -41,7 +41,7 @@
 
                 <form class="form">
 
-                    <div class="row">
+                    <div class="row collapse">
 
                         <div class="small-12 medium-6 column">
 
@@ -61,7 +61,7 @@
 
                     </div>
 
-                    <div class="row">
+                    <div class="row collapse">
 
                         <div class="small-12 medium-6 column">
 
@@ -81,7 +81,7 @@
 
                     </div>
 
-                    <div class="row">
+                    <div class="row collapse">
                     
                         <div class="small-12 column medium-centered">
 
@@ -93,7 +93,7 @@
 
                     </div>
                         
-                    <div class="row">
+                    <div class="row collapse">
 
                         <div class="small-12 medium-6 column medium-centered">
 

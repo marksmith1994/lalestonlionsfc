@@ -17,13 +17,19 @@
 }
 
 .contact-form{
+    
     h3{
         color: white;
         letter-spacing: 2px;
         text-align: center;
+        @include headerfont();
+        word-wrap: break-word;
 
         a{
+            @include headerfont();
             color: white;
+            word-wrap: break-word;
+
         }
     }
 

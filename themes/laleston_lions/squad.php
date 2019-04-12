@@ -9,7 +9,7 @@
     }
 ?>
 
-<div class="hero"  style="background-image: url('<?php echo $bannerImage?>')">
+<div class="hero photo-image"  style="background-image: url('<?php echo $bannerImage?>')">
         
     <div class="hero--content">
         <h1><span class="show">MEET</span> <span class="show">THE</span> <span class="show">LIONS</span></h1>
@@ -18,14 +18,6 @@
 </div>
 
 <div class="team-container global-margin">
-    <?php
-    /*
-    <div class="header-border black">
-        <span></span>
-        <h2><?php echo $c->getCollectionName(); ?></h2>
-    </div>
-    */
-    ?>
 
     <div class="row">
 
