@@ -19,18 +19,14 @@
 
 <div class="team-container global-margin">
 
-    <div class="row">
-
-        <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4">
-            
-            <?php 
-                $a = new Area('Main Area Block');
-                $a->display($c);
-            ?>
-            
-        <ul>
-
-    </div>
+    <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4 team-member-container">
+        
+        <?php 
+            $a = new Area('Main Area Block');
+            $a->display($c);
+        ?>
+        
+    <ul>
 
 </div>
 

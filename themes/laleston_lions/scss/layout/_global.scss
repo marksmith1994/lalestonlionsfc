@@ -17,12 +17,23 @@ body {
 		padding: 100px 15px;
 	}
 
+	&.fixtures-results{
+		padding: 0 0 25px 0;	
+		
+		@media #{$small} {	
+			padding: 0 0 50px 0;
+		}
+	
+		@media #{$medium} {
+			padding: 0 0 100px 0;
+		}
+	}
 }
 
 .burger-container {
 	display: flex;
 	right: 15px;
-	position: absolute;
+	position: fixed;
 	cursor: pointer;
 	margin-right: 10px;
 	color: black;

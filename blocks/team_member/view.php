@@ -3,7 +3,7 @@
 
 ?>
 
-<li>
+<li class="slide-container">
     <div class="team-member" style="background-image: url('<?php echo $image; ?>');">
         <div class="player-details">
             <h4 class="position"><?php echo $position;?></h4>

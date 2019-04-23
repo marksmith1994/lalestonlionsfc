@@ -249,16 +249,6 @@
 		"plM": 3758088159,
 		"prP": 0
 		},
-	"/js/css3-mediaqueries.js": {
-		"ft": 64,
-		"ma": 0,
-		"mi": 1,
-		"oA": 0,
-		"oAP": "/js/css3-mediaqueries-min.js",
-		"oF": 0,
-		"sC": 3,
-		"tS": 0
-		},
 	"/js/min/site-min.js": {
 		"ft": 64,
 		"ma": 0,
@@ -269,23 +259,13 @@
 		"sC": 3,
 		"tS": 0
 		},
-	"/js/site-min.js": {
-		"ft": 64,
-		"ma": 0,
-		"mi": 1,
-		"oA": 0,
-		"oAP": "/js/site-min-min.js",
-		"oF": 0,
-		"sC": 3,
-		"tS": 0
-		},
 	"/js/site.js": {
 		"ft": 64,
 		"ma": 0,
 		"mi": 1,
 		"oA": 0,
-		"oAP": "/js/site-min.js",
-		"oF": 0,
+		"oAP": "/js/min/site-min.js",
+		"oF": 2,
 		"sC": 0,
 		"tS": 0
 		},
@@ -1282,7 +1262,7 @@
 "projectAttributes": {
 	"creationDate": 576492714.380036,
 	"displayValue": "laleston_lions",
-	"displayValueWasSetByUser": 0,
+	"displayValueWasSetByUser": 1,
 	"iconImageName": "meme-doge",
 	"iconImageWasSetByUser": 0
 	},

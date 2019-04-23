@@ -24,9 +24,13 @@
     <h2><?php echo $c->getCollectionName(); ?></h2>
 </div>
 
-<?php 
-    $a = new Area('Main Area Block');
-    $a->display($c);
-?>
+<div class="global-margin fixtures-results">
+
+    <?php 
+        $a = new Area('Main Area Block');
+        $a->display($c);
+    ?>
+
+</div>
 
 <?php  $this->inc('elements/footer.php'); ?>
