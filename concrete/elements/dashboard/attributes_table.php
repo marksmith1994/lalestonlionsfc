@@ -1,153 +1,183 @@
 
-<? 
+<?php
 //Used on both page and file attributes
 $c = Page::getCurrentPage();
 
 $sets = array();
 if (is_object($category) && $category->allowAttributeSets()) {
-	$sets = $category->getAttributeSets();
+    $sets = $category->getAttributeSets();
 }
 ?>
 
-<div class="ccm-pane-options">
-<form class="form-horizontal">
-<div class="ccm-pane-options-permanent-search">
 
-	<? $form = Loader::helper('form'); ?>
-
-	<? if (count($sets) > 0) { ?>
-	<div class="span6">
-	<?=$form->label('asGroupAttributes', t('View'))?>
-	<div class="controls">
-	<select class="span3" onchange="window.location.href='<?=Loader::helper('navigation')->getLinkToCollection($c)?>?asGroupAttributes=' + this.value" id="asGroupAttributes" name="asGroupAttributes">
-		<option value="1" <? if ($_REQUEST['asGroupAttributes'] !== '0') { ?> selected <? } ?>><?=t('Grouped by set')?></option>
-		<option value="0" <? if ($_REQUEST['asGroupAttributes'] === '0') { ?> selected <? } ?>><?=t('In one list')?></option>
-	</select>
-	</div>
-	</div>
-	
-	<? } ?>
-	<a href="<?=$this->url('/dashboard/system/attributes/sets', 'category', $category->getAttributeKeyCategoryID())?>" id="ccm-list-view-customize-top"><span class="ccm-menu-icon ccm-icon-properties"></span><?=t('Manage Sets')?></a>
-</div>
-</form>
+<div class="ccm-dashboard-header-buttons">
+	<?php if (count($sets) > 0) {
+    ?>
+		<button type="button" class="btn btn-default" data-toggle="dropdown">
+		<?=t('View')?> <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" role="menu">
+		<li><a href="<?=Loader::helper('navigation')->getLinkToCollection($c)?>?asGroupAttributes=1"><?=t('Grouped by Set')?></a></li>
+		<li><a href="<?=Loader::helper('navigation')->getLinkToCollection($c)?>?asGroupAttributes=0"><?=t('In One List')?></a></li>
+		</ul>
+	<?php 
+} ?>
+	<a href="<?=URL::to('/dashboard/system/attributes/sets', 'category', $category->getAttributeKeyCategoryID())?>" class="btn btn-default"><?=t('Manage Sets')?></a>
 </div>
 
-<div class="ccm-pane-body">
+<?php
+if (count($attribs) > 0) {
+    ?>
 
-<?
-if (count($attribs) > 0) { ?>
 
+	<?php
+    $ih = Loader::helper('concrete/ui');
 
-	<?
-	$ih = Loader::helper('concrete/interface');
-	$valt = Loader::helper('validation/token');
+    if (count($sets) > 0 && ($_REQUEST['asGroupAttributes'] !== '0')) {
+        foreach ($sets as $as) {
+            ?>
 
+		<fieldset>
+			<legend><?=$as->getAttributeSetDisplayName()?></legend>
 	
-	if (count($sets) > 0 && ($_REQUEST['asGroupAttributes'] !== '0')) { ?>
-	
-	
-		<?
-	
-		foreach($sets as $as) { ?>
-	
-		
-		<h3><?=$as->getAttributeSetName()?></h3>
-	
-		<?
-		
-		$setattribs = $as->getAttributeKeys();
-		if (count($setattribs) == 0) { ?>
+		<?php
+
+        $setattribs = $as->getAttributeKeys();
+            if (count($setattribs) == 0) {
+                ?>
 		
 			<div class="ccm-attribute-list-wrapper"><?=t('No attributes defined.')?></div>
 		
-		<? } else { ?>
+		<?php 
+            } else {
+                ?>
+            <ul class="item-select-list ccm-sortable-attribute-set-list-wrapper" attribute-set-id="<?=$as->getAttributeSetID()?>" id="asID_<?=$as->getAttributeSetID()?>">
+			<?php
+            foreach ($setattribs as $ak) {
+                $controller = $ak->getController();
+                $formatter = $controller->getIconFormatter();
+                ?>
+                <li class="ccm-attribute" id="akID_<?=$ak->getAttributeKeyID()?>">
+                    <a href="<?=URL::to($editURL, 'edit', $ak->getAttributeKeyID())?>" title="<?php echo t('Handle')?>: <?php echo $ak->getAttributeKeyHandle();
+                ?>">
+                        <?=$formatter->getListIconElement()?>
+                        <?=$ak->getAttributeKeyDisplayName()?>
+                    </a>
+                    <i class="ccm-item-select-list-sort"></i>
+                </li>
+			<?php 
+            }
+                ?>
+			</ul>
 			
-			<div class="ccm-attribute-sortable-set-list ccm-attribute-list-wrapper" attribute-set-id="<?=$as->getAttributeSetID()?>" id="asID_<?=$as->getAttributeSetID()?>">			
+		<?php 
+            }
+            ?>
 			
-			<?
-			
-			foreach($setattribs as $ak) { ?>
-			
-			<div class="ccm-attribute" id="akID_<?=$as->getAttributeSetID()?>_<?=$ak->getAttributeKeyID()?>">
-				<img class="ccm-attribute-icon" src="<?=$ak->getAttributeKeyIconSRC()?>" width="16" height="16" /><a href="<?=$this->url($editURL, 'edit', $ak->getAttributeKeyID())?>"><?=$ak->getAttributeKeyName()?></a>
-			</div>
-	
+		</fieldset>
 
-			<? } ?>
-			
-			</div>
-			
-			<? } ?>
-			
-			
-		<? } 
-		
-		$unsetattribs = $category->getUnassignedAttributeKeys();
-		if (count($unsetattribs) > 0) { ?>
-		
-			<h3><?=t('Other')?></h3>
-			<div class="ccm-attribute-list-wrapper">
-			<?
-			foreach($unsetattribs as $ak) { ?>
-	
-			<div class="ccm-attribute" id="akID_<?=$as->getAttributeSetID()?>_<?=$ak->getAttributeKeyID()?>">
-				<img class="ccm-attribute-icon" src="<?=$ak->getAttributeKeyIconSRC()?>" width="16" height="16" /><a href="<?=$this->url($editURL, 'edit', $ak->getAttributeKeyID())?>"><?=$ak->getAttributeKeyName()?></a>
-			</div>
-	
+		<?php 
+        }
 
-			<? } ?>
-			</div>
+        $unsetattribs = $category->getController()->getSetManager()->getUnassignedAttributeKeys();
+        if (count($unsetattribs) > 0) {
+            ?>
 		
-		<?
+			<fieldset>
+				<legend><?=t('Other')?></legend>
+				<ul class="ccm-attribute-list-wrapper item-select-list">
+				<?php
+                foreach ($unsetattribs as $ak) {
+                    $controller = $ak->getController();
+                    $formatter = $controller->getIconFormatter();
+                    ?>
+                    <li class="ccm-attribute">
+                        <a href="<?=URL::to($editURL, 'edit', $ak->getAttributeKeyID())?>" title="<?php echo t('Handle')?>: <?php echo $ak->getAttributeKeyHandle();
+                    ?>">
+                            <?=$formatter->getListIconElement()?>
+                            <?=$ak->getAttributeKeyDisplayName()?>
+                        </a>
+                    </li>
+	            <?php 
+                }
+            ?>
+                </ul>
+			</fieldset>
 		
-		}
+		<?php
+
+        }
+    } else {
+        ?>
+		<ul class="item-select-list <?=($sortable ? 'ccm-sortable-attribute-list-wrapper' : 'ccm-attribute-list-wrapper');
+        ?>">
+		<?php
+        foreach ($attribs as $ak) {
+            $controller = $ak->getController();
+            $formatter = $controller->getIconFormatter();
+            ?>
+            <li class="ccm-attribute" id="akID_<?=$ak->getAttributeKeyID()?>">
+			    <a href="<?=URL::to($editURL, 'edit', $ak->getAttributeKeyID())?>" title="<?php echo t('Handle')?>: <?php echo $ak->getAttributeKeyHandle();
+            ?>">
+                    <?=$formatter->getListIconElement()?>
+                    <?=$ak->getAttributeKeyDisplayName()?></a>
+                <?php if ($sortable) {
+    ?><i class="ccm-item-select-list-sort"></i><?php 
+}
+            ?>
+		    </li>
+		
+		<?php 
+        }
+        ?>
+		</ul>
 	
-	} else { ?>
-		
-		<div class="ccm-attributes-list">
-		
-		<?
-		foreach($attribs as $ak) { ?>
-		<div class="ccm-attribute" id="akID_<?=$ak->getAttributeKeyID()?>">
-			<img class="ccm-attribute-icon" src="<?=$ak->getAttributeKeyIconSRC()?>" width="16" height="16" /><a href="<?=$this->url($editURL, 'edit', $ak->getAttributeKeyID())?>"><?=$ak->getAttributeKeyName()?></a>
-		</div>
-		
-		<? } ?>
+	<?php 
+    }
+    ?>
 	
-		</div>
-	
-	<? } ?>
-	
-<? } else { ?>
+<?php 
+} else {
+    ?>
 	
 	<p>
-		<?
-	 echo t('No attributes defined.');
-		?>
+		<?php
+     echo t('No attributes defined.');
+    ?>
 	</p>
 	
-<? } ?>
-
-</div>
+<?php 
+} ?>
 
 <script type="text/javascript">
 $(function() {
-	$("div.ccm-attribute-sortable-set-list").sortable({
-		handle: 'img.ccm-attribute-icon',
+    $("ul.ccm-sortable-attribute-set-list-wrapper").sortable({
+		handle: 'i.ccm-item-select-list-sort',
 		cursor: 'move',
 		opacity: 0.5,
 		stop: function() {
 			var ualist = $(this).sortable('serialize');
 			ualist += '&cID=<?=$c->getCollectionID()?>';
 			ualist += '&asID=' + $(this).attr('attribute-set-id');
-			$.post('<?=REL_DIR_FILES_TOOLS_REQUIRED?>/dashboard/attribute_sets_update', ualist, function(r) {
-
-			});
+            ualist += '&ccm_token=' + '<?=Loader::helper('validation/token')->generate('attribute_sort')?>';
+			$.post('<?=URL::to('/ccm/system/attribute/attribute_sort/set')?>', ualist, function(r) {});
 		}
 	});
 });
 </script>
 
-<style type="text/css">
-div.ccm-attribute-sortable-set-list img.ccm-attribute-icon:hover {cursor: move}
-</style>
+
+<?php $form = Loader::helper('form'); ?>
+<?php if (isset($types) && is_array($types) && count($types) > 0) {
+    ?>
+<form method="get" action="<?=$view->action('select_type')?>" id="ccm-attribute-type-form">
+	<label for="atID"><?=t('Add Attribute')?></label>
+	<div class="form-inline">
+	<div class="form-group">
+		<?=$form->select('atID', $types)?>
+	</div>
+	<button type="submit" class="btn btn-default"><?=t('Go')?></button>
+	</div>
+</form>
+<?php 
+} ?>

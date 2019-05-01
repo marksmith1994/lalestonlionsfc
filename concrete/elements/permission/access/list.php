@@ -1,46 +1,54 @@
-<? defined('C5_EXECUTE') or die("Access Denied."); ?>
+<?php defined('C5_EXECUTE') or die("Access Denied."); ?>
 
-<? foreach($accessTypes as $accessType => $title) { 
-	$list = $permissionAccess->getAccessListItems($accessType); 
-	?>
-	<h3><?=$title?></h3>
+<?php foreach ($accessTypes as $accessType => $title) {
+    $list = $permissionAccess->getAccessListItems($accessType);
+    ?>
+	<a style="float: right" href="<?=REL_DIR_FILES_TOOLS_REQUIRED?>/permissions/access_entity?accessType=<?=$accessType?>&pkCategoryHandle=<?=$pkCategoryHandle?>" dialog-width="510" dialog-height="500" dialog-title="<?=t('Add Access Entity')?>" class="dialog-launch btn btn-xs btn-default"><?=t('Add')?></a>
 
-<table class="ccm-permission-access-list table table-bordered">
+	<h4><?=$title?></h4>
+
+<table class="ccm-permission-access-list table">
+<?php if (count($list) > 0) {
+    ?>
+
+<?php foreach ($list as $pa) {
+    $pae = $pa->getAccessEntityObject();
+    $pdID = 0;
+    if (is_object($pa->getPermissionDurationObject())) {
+        $pdID = $pa->getPermissionDurationObject()->getPermissionDurationID();
+    }
+
+    ?>
 <tr>
-	<th colspan="3">
-		<div style="position: relative">
-		<a href="<?=REL_DIR_FILES_TOOLS_REQUIRED?>/permissions/access_entity?accessType=<?=$accessType?>&pkCategoryHandle=<?=$pkCategoryHandle?>" dialog-width="500" dialog-height="500" dialog-title="<?=t('Add Access Entity')?>" class="ccm-advanced-search-add-field dialog-launch"><span class="ccm-menu-icon ccm-icon-view"></span><?=t('Add')?></a>
-		
-
-	<?=t('Access')?>
-	</div>
-	</th>
-</tr>
-<? if (count($list) > 0) { ?>
-
-<? foreach($list as $pa) {
-	$pae = $pa->getAccessEntityObject(); 
-	$pdID = 0;
-	if (is_object($pa->getPermissionDurationObject())) { 
-		$pdID = $pa->getPermissionDurationObject()->getPermissionDurationID();
-	}
-	
-	?>
-<tr>
-	<td width="100%"><?=$pae->getAccessEntityLabel()?></td>
-	<td><a href="<?=REL_DIR_FILES_TOOLS_REQUIRED?>/permissions/access_entity?peID=<?=$pae->getAccessEntityID()?>&pdID=<?=$pdID?>&accessType=<?=$accessType?>" dialog-width="500" dialog-height="500" dialog-title="<?=t('Add Access Entity')?>" class="dialog-launch"><img src="<?=ASSETS_URL_IMAGES?>/icons/clock<? if (is_object($pa->getPermissionDurationObject())) { ?>_active<? } ?>.png" width="16" height="16" /></a></td>
-	<td><a href="javascript:void(0)" onclick="ccm_deleteAccessEntityAssignment(<?=$pae->getAccessEntityID()?>)"><img src="<?=ASSETS_URL_IMAGES?>/icons/delete_small.png" width="16" height="16" /></a></td>
+    <td>
+    <a href="javascript:void(0)" class="icon-link pull-right" style="margin-left: 10px" onclick="ccm_deleteAccessEntityAssignment(<?=$pae->getAccessEntityID()?>)"><i class="fa fa-trash-o"></i></a>
+	<a href="<?=REL_DIR_FILES_TOOLS_REQUIRED?>/permissions/access_entity?peID=<?=$pae->getAccessEntityID()?>&pdID=<?=$pdID?>&accessType=<?=$accessType?>" dialog-width="510" dialog-height="500" dialog-title="<?=t('Add Access Entity')?>" class="<?php if (!is_object($pa->getPermissionDurationObject())) {
+    ?>icon-link<?php
+}
+    ?> pull-right dialog-launch"><i class="fa fa-clock-o <?php if (is_object($pa->getPermissionDurationObject())) {
+    ?>text-info<?php
+}
+    ?>"></i></a>
+    <?=$pae->getAccessEntityLabel()?>
+    </td>
 </tr>
 
-<? } ?>
+<?php
+}
+    ?>
 
-<? } else { ?>
+<?php
+} else {
+    ?>
 	<tr>
-	<td colspan="3"><?=t('None')?></td>
+	<td><?=t('None')?></td>
 	</tr>
-<? } ?>
+<?php
+}
+    ?>
 
 </table>
 
 
-<? } ?>
+<?php
+} ?>

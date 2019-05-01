@@ -1,0 +1,88 @@
+form,
+.external-form{
+    margin: 50px 0;
+
+    .field{
+        margin: 15px 0;
+    }
+
+    .calender-input{
+        cursor: pointer;
+        background-color: transparent;
+    }
+
+    .calender-column{
+        z-index: 1;
+    }
+
+    input,
+    textarea{
+        height: 50px;
+        width: 100%;
+        border: 4px solid black;
+        padding: 30px 15px;
+        resize: none;
+        @include bodyfont();
+        font-size: 18px;
+        
+        &:focus{
+            outline: none;
+            border: 4px solid $orange;
+            transition: border 0.3s ease-in-out;
+        }
+
+    }
+
+    textarea{
+        padding: 15px;
+    }
+
+    .field.error{
+
+        input,
+        textarea,
+        .dropdown{
+            border: 2px solid red;        
+        }
+    }
+
+    .dropdown{
+        @include bodyfont();
+        width: 100%;
+        height: 50px;
+        border: 1px solid black;
+
+        // .selected{
+        //     color: #c1c1c1;
+        // }
+        // &.focus .selected{
+        //     color: black;
+        // }
+    }
+
+
+    textarea{
+        height: 250px;
+        @include bodyfont();
+
+    }
+
+    .datepicker table{
+        width: 50vw;
+        height: 50vh;
+    }
+
+    button{
+        width: 100%;
+        background-color: black;
+        border: 1px solid black;
+        margin: 15px 0;
+        padding: 25px;
+
+        &:hover{
+            border: 1px solid black!important;
+            cursor: pointer;
+        }
+    }
+
+}

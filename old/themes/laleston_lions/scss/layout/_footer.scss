@@ -1,0 +1,29 @@
+footer{
+    background-color: #303030;
+    min-height: 125px;
+    padding: 25px;
+    text-align: center;
+
+    .footer-text{
+        font-size: 15px;
+        color: white;
+    }
+
+    img,
+    svg{
+        fill: white!important;
+        border-radius: 30px;
+        font-size: 38px;
+        padding: 5px;
+        margin: 5px;
+        transition: fill 0.3s ease-in-out;
+
+        &:hover{
+            fill: #ed6e12!important;
+            transition: fill 0.3s ease-in-out;
+        }
+    }
+
+
+
+}

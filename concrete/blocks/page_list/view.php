@@ -1,80 +1,181 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
-$rssUrl = $showRss ? $controller->getRssUrl($b) : '';
-$th = Loader::helper('text');
-//$ih = Loader::helper('image'); //<--uncomment this line if displaying image attributes (see below)
-//Note that $nh (navigation helper) is already loaded for us by the controller (for legacy reasons)
-?>
 
-<div class="ccm-page-list">
+$c = Page::getCurrentPage();
 
-	<?php foreach ($pages as $page):
+/** @var \Concrete\Core\Utility\Service\Text $th */
+$th = Core::make('helper/text');
+/** @var \Concrete\Core\Localization\Service\Date $dh */
+$dh = Core::make('helper/date');
 
-		// Prepare data for each page being listed...
-		$title = $th->entities($page->getCollectionName());
-		$url = $nh->getLinkToCollection($page);
-		$target = ($page->getCollectionPointerExternalLink() != '' && $page->openCollectionPointerExternalLinkInNewWindow()) ? '_blank' : $page->getAttribute('nav_target');
-		$target = empty($target) ? '_self' : $target;
-		$description = $page->getCollectionDescription();
-		$description = $controller->truncateSummaries ? $th->shorten($description, $controller->truncateChars) : $description;
-		$description = $th->entities($description);	
-		
-		//Other useful page data...
-		//$date = date('F j, Y', strtotime($page->getCollectionDatePublic()));
-		//$last_edited_by = $page->getVersionObject()->getVersionAuthorUserName();
-		//$original_author = Page::getByID($page->getCollectionID(), 1)->getVersionObject()->getVersionAuthorUserName();
-		
-		/* CUSTOM ATTRIBUTE EXAMPLES:
-		 * $example_value = $page->getAttribute('example_attribute_handle');
-		 *
-		 * HOW TO USE IMAGE ATTRIBUTES:
-		 * 1) Uncomment the "$ih = Loader::helper('image');" line up top.
-		 * 2) Put in some code here like the following 2 lines:
-		 *      $img = $page->getAttribute('example_image_attribute_handle');
-		 *      $thumb = $ih->getThumbnail($img, 64, 9999, false);
-		 *    (Replace "64" with max width, "9999" with max height. The "9999" effectively means "no maximum size" for that particular dimension.)
-		 *    (Change the last argument from false to true if you want thumbnails cropped.)
-		 * 3) Output the image tag below like this:
-		 *		<img src="<?php echo $thumb->src ?>" width="<?php echo $thumb->width ?>" height="<?php echo $thumb->height ?>" alt="" />
-		 *
-		 * ~OR~ IF YOU DO NOT WANT IMAGES TO BE RESIZED:
-		 * 1) Put in some code here like the following 2 lines:
-		 * 	    $img_src = $img->getRelativePath();
-		 * 	    list($img_width, $img_height) = getimagesize($img->getPath());
-		 * 2) Output the image tag below like this:
-		 * 	    <img src="<?php echo $img_src ?>" width="<?php echo $img_width ?>" height="<?php echo $img_height ?>" alt="" />
-		 */
-		
-		/* End data preparation. */
+if ($c->isEditMode() && $controller->isBlockEmpty()) {
+    ?>
+    <div class="ccm-edit-mode-disabled-item"><?php echo t('Empty Page List Block.') ?></div>
+    <?php
+} else {
+    ?>
 
-		/* The HTML from here through "endforeach" is repeated for every item in the list... */ ?>
-		<h3 class="ccm-page-list-title">
-			<a href="<?php echo $url ?>" target="<?php echo $target ?>"><?php echo $title ?></a>
-		</h3>
-		<div class="ccm-page-list-description">
-			<?php echo $description ?>
-		</div>
-		
-	<?php endforeach; ?>
- 
+    <div class="ccm-block-page-list-wrapper">
 
-	<?php if ($showRss): ?>
-		<div class="ccm-page-list-rss-icon">
-			<a href="<?php echo $rssUrl ?>" target="_blank"><img src="<?php echo $rssIconSrc ?>" width="14" height="14" alt="<?php echo t('RSS Icon') ?>" title="<?php echo t('RSS Feed') ?>" /></a>
-		</div>
-		<link href="<?php echo BASE_URL.$rssUrl ?>" rel="alternate" type="application/rss+xml" title="<?php echo $rssTitle; ?>" />
-	<?php endif; ?>
- 
-</div><!-- end .ccm-page-list -->
+        <?php if (isset($pageListTitle) && $pageListTitle) {
+            ?>
+            <div class="ccm-block-page-list-header">
+                <h5><?php echo h($pageListTitle) ?></h5>
+            </div>
+            <?php
+        } ?>
+
+        <?php if (isset($rssUrl) && $rssUrl) {
+            ?>
+            <a href="<?php echo $rssUrl ?>" target="_blank" class="ccm-block-page-list-rss-feed">
+                <i class="fa fa-rss"></i>
+            </a>
+            <?php
+        } ?>
+
+        <div class="ccm-block-page-list-pages">
+
+            <?php
+
+            $includeEntryText = false;
+            if (
+                (isset($includeName) && $includeName)
+                ||
+                (isset($includeDescription) && $includeDescription)
+                ||
+                (isset($useButtonForLink) && $useButtonForLink)
+            ) {
+                $includeEntryText = true;
+            }
+
+            foreach ($pages as $page) {
+
+                // Prepare data for each page being listed...
+                $buttonClasses = 'ccm-block-page-list-read-more';
+                $entryClasses = 'ccm-block-page-list-page-entry';
+                $title = $page->getCollectionName();
+                if ($page->getCollectionPointerExternalLink() != '') {
+                    $url = $page->getCollectionPointerExternalLink();
+                    if ($page->openCollectionPointerExternalLinkInNewWindow()) {
+                        $target = '_blank';
+                    }
+                } else {
+                    $url = $page->getCollectionLink();
+                    $target = $page->getAttribute('nav_target');
+                }
+                $target = empty($target) ? '_self' : $target;
+                $description = $page->getCollectionDescription();
+                $description = $controller->truncateSummaries ? $th->wordSafeShortText($description, $controller->truncateChars) : $description;
+                $thumbnail = false;
+                if ($displayThumbnail) {
+                    $thumbnail = $page->getAttribute('thumbnail');
+                }
+                if (is_object($thumbnail) && $includeEntryText) {
+                    $entryClasses = 'ccm-block-page-list-page-entry-horizontal';
+                }
+
+                $date = $dh->formatDateTime($page->getCollectionDatePublic(), true);
+
+                //Other useful page data...
+
+                //$last_edited_by = $page->getVersionObject()->getVersionAuthorUserName();
+
+                /* DISPLAY PAGE OWNER NAME
+                 * $page_owner = UserInfo::getByID($page->getCollectionUserID());
+                 * if (is_object($page_owner)) {
+                 *     echo $page_owner->getUserDisplayName();
+                 * }
+                 */
+
+                /* CUSTOM ATTRIBUTE EXAMPLES:
+                 * $example_value = $page->getAttribute('example_attribute_handle', 'display');
+                 *
+                 * When you need the raw attribute value or object:
+                 * $example_value = $page->getAttribute('example_attribute_handle');
+                 */
+
+                /* End data preparation. */
+
+                /* The HTML from here through "endforeach" is repeated for every item in the list... */ ?>
+
+                <div class="<?php echo $entryClasses ?>">
+
+                    <?php if (is_object($thumbnail)) {
+                        ?>
+                        <div class="ccm-block-page-list-page-entry-thumbnail">
+                            <?php
+                            $img = Core::make('html/image', array($thumbnail));
+                            $tag = $img->getTag();
+                            $tag->addClass('img-responsive');
+                            echo $tag; ?>
+                        </div>
+                        <?php
+                    } ?>
+
+                    <?php if ($includeEntryText) {
+                        ?>
+                        <div class="ccm-block-page-list-page-entry-text">
+
+                            <?php if (isset($includeName) && $includeName) {
+                                ?>
+                                <div class="ccm-block-page-list-title">
+                                    <?php if (isset($useButtonForLink) && $useButtonForLink) {
+                                        ?>
+                                        <?php echo h($title); ?>
+                                        <?php
+
+                                    } else {
+                                        ?>
+                                        <a href="<?php echo h($url) ?>"
+                                           target="<?php echo h($target) ?>"><?php echo h($title) ?></a>
+                                        <?php
+
+                                    } ?>
+                                </div>
+                                <?php
+                            } ?>
+
+                            <?php if (isset($includeDate) && $includeDate) {
+                                ?>
+                                <div class="ccm-block-page-list-date"><?php echo h($date) ?></div>
+                                <?php
+                            } ?>
+
+                            <?php if (isset($includeDescription) && $includeDescription) {
+                                ?>
+                                <div class="ccm-block-page-list-description"><?php echo h($description) ?></div>
+                                <?php
+                            } ?>
+
+                            <?php if (isset($useButtonForLink) && $useButtonForLink) {
+                                ?>
+                                <div class="ccm-block-page-list-page-entry-read-more">
+                                    <a href="<?php echo h($url) ?>" target="<?php echo h($target) ?>"
+                                       class="<?php echo h($buttonClasses) ?>"><?php echo h($buttonLinkText) ?></a>
+                                </div>
+                                <?php
+                            } ?>
+
+                        </div>
+                        <?php
+                    } ?>
+                </div>
+
+                <?php
+            } ?>
+        </div><!-- end .ccm-block-page-list-pages -->
+
+        <?php if (count($pages) == 0) { ?>
+            <div class="ccm-block-page-list-no-pages"><?php echo h($noResultsMessage) ?></div>
+        <?php } ?>
+
+    </div><!-- end .ccm-block-page-list-wrapper -->
 
 
-<?php if ($showPagination): ?>
-	<div id="pagination">
-		<div class="ccm-spacer"></div>
-		<div class="ccm-pagination">
-			<span class="ccm-page-left"><?php echo $paginator->getPrevious('&laquo; ' . t('Previous')) ?></span>
-			<?php echo $paginator->getPages() ?>
-			<span class="ccm-page-right"><?php echo $paginator->getNext(t('Next') . ' &raquo;') ?></span>
-		</div>
-	</div>
-<?php endif; ?>
+    <?php if ($showPagination) { ?>
+        <?php echo $pagination; ?>
+    <?php } ?>
+
+    <?php
+
+} ?>

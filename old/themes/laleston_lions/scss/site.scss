@@ -1,0 +1,31 @@
+// Make sure the charset is set appropriately
+@charset "UTF-8";
+
+// This includes all of the foundation global elements that are needed to work with any of the other files.
+@import "foundation/variables";
+
+// This includes all of the foundation global elements that are needed to work with any of the other files.
+@import "helpers/normalize",
+        "helpers/mixins";
+
+// Foundation Components
+@import "foundation/components/global",
+        "foundation/components/grid-5",
+        "foundation/components/visibility",
+        "foundation/components/block-grid",
+        "foundation/components/type";
+
+@import "base/buttons",
+        "base/forms",
+        "base/typography";
+   
+@import "layout/global",     
+        "layout/home",
+        "layout/contact",
+        "layout/squad",
+        "layout/news",
+        "layout/fixtures",
+        "layout/footer";
+
+@import "plugins/slick",
+        "plugins/easydropdown";

@@ -1,4 +1,5 @@
-<?
+<?php
+
 defined('C5_EXECUTE') or die("Access Denied.");
 
 $subject = t("Forgot Password");
@@ -16,6 +17,4 @@ You may change your password at the following address:
 
 Thanks for browsing the site!
 
-", $uName, SITE, $uName, $changePassURL);
-
-?>
+", $uName, $siteName, $uName, $changePassURL);

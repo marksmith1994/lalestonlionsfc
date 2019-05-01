@@ -1,0 +1,272 @@
+header {
+	position: relative;
+}
+
+body {
+	position: static
+}
+
+.global-margin{
+	padding: 25px 15px;
+
+	@media #{$small} {	
+		padding: 50px 15px;
+	}
+
+	@media #{$medium} {
+		padding: 100px 15px;
+	}
+
+	&.fixtures-results{
+		padding: 0 0 25px 0;	
+		
+		@media #{$small} {	
+			padding: 0 0 50px 0;
+		}
+	
+		@media #{$medium} {
+			padding: 0 0 100px 0;
+		}
+	}
+}
+
+.burger-container {
+	display: flex;
+	right: 15px;
+	position: fixed;
+	cursor: pointer;
+	margin-right: 10px;
+	color: black;
+	align-items: center;
+	z-index: 100;
+	
+	span {
+		margin-right: 10px;
+	}
+
+	@media #{$medium} {
+		display: none;
+	}
+}
+
+.mobile-menu {
+	visibility: hidden;
+	transform: translateY(-100vh);
+	transition: 0.3s all ease-in-out;
+	height: 100vh;
+    position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	background-color: black;
+
+	&.open {
+		visibility: visible;
+		transform: translateY(0px);
+		transition: 0.3s all ease-in-out;
+	}
+}
+
+.nav {
+	list-style: none;
+	height: 100vh;
+	padding: 10%;
+
+	@media #{$medium} {
+		height: auto;
+		padding: 0%;
+	}
+
+	li {
+		text-align: center;
+		font-size: 30px;
+		line-height: 36px;
+		padding: 5%;
+		
+		@media #{$medium} {
+			padding: 0;
+		}
+
+		a {
+			color: white;
+
+		}
+		@media #{$medium} {
+
+			&.nav-path-selected{
+				position: relative;
+
+				a::after{
+					border-bottom: 0.2em solid #ed6e12;
+					content: "";
+					left: 0;
+					margin-top: calc(0.2em / 2 * -1);
+					position: absolute;
+					right: 0;
+					top: 50%;
+				}
+			}
+		}
+	}
+}
+
+.bar1,
+.bar2,
+.bar3 {
+	width: 40px;
+	height: 5px;
+	background-color: white;
+	margin: 6px 0;
+	transition: 0.4s;
+	cursor: pointer;
+}
+
+.change .bar1 {
+	-webkit-transform: rotate(-45deg) translate(-9px, 6px);
+	transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+.change .bar2 {
+	opacity: 0;
+}
+
+.change .bar3 {
+	-webkit-transform: rotate(45deg) translate(-8px, -8px);
+	transform: rotate(45deg) translate(-8px, -8px);
+}
+
+
+.main__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	position: absolute;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 10;
+	padding: 10px;
+
+	@media #{$medium} {
+		padding: 20px;
+	}
+}
+
+.main-header-logo {
+	display: block;
+	text-indent: -9999px;
+	white-space: nowrap;
+	overflow: hidden;
+	width: 75px;
+	height: 75px;
+	// background-image: url(../images/lionslogo.svg);
+	background-image: url(../images/lionslogo.png);
+	background-size: cover;
+	background-repeat: no-repeat;
+	margin: 0;
+}
+
+.main-nav {
+	display: none;
+
+	@media #{$medium} {
+		display: flex;
+		align-items: center;
+	}
+
+	.toggle {
+		padding: 5px 20px 6px;
+		background-color: white;
+		border-radius: 25px;
+		text-transform: capitalize;
+		font-weight: 400;
+	}
+
+	.nav {
+		display: flex;
+		list-style: none;
+		margin-bottom: 0px;
+
+		li {
+			margin: 0 15px 0 0;
+
+			&.nav-selected,
+			&:hover{
+				a {
+					// border-bottom: 1px solid white;
+					// transition: all 0.3s ease-in-out;
+				}
+			}
+
+			a {
+				text-transform: uppercase;
+				@include headerfont();
+				color: white;
+				font-size: 17px;
+				letter-spacing: 1px;
+			}
+
+
+		}
+	}
+}
+
+#section04 a {
+	padding-top: 60px;
+}
+
+.scroll-down {
+	position: absolute;
+	bottom: 20%;
+	left: 50%;
+	transform: translate(-50%, -20%);
+	z-index: 2;
+	@media #{$medium} {
+		transform: translate(-50%, -10%);
+		bottom: 10%;
+	}
+}
+
+#section04 a span {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 24px;
+	height: 24px;
+	margin-left: -12px;
+	border-left: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+	-webkit-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	-webkit-animation: sdb04 2s infinite;
+	animation: sdb04 2s infinite;
+	box-sizing: border-box;
+}
+
+@-webkit-keyframes sdb04 {
+	0% {
+		-webkit-transform: rotate(-45deg) translate(0, 0);
+	}
+
+	20% {
+		-webkit-transform: rotate(-45deg) translate(-10px, 10px);
+	}
+
+	40% {
+		-webkit-transform: rotate(-45deg) translate(0, 0);
+	}
+}
+
+@keyframes sdb04 {
+	0% {
+		transform: rotate(-45deg) translate(0, 0);
+	}
+
+	20% {
+		transform: rotate(-45deg) translate(-10px, 10px);
+	}
+
+	40% {
+		transform: rotate(-45deg) translate(0, 0);
+	}
+}

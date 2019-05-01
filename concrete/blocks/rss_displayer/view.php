@@ -1,45 +1,56 @@
-<? defined('C5_EXECUTE') or die("Access Denied."); ?>
+<?php defined('C5_EXECUTE') or die("Access Denied."); ?>
 
-<div id="rssSummaryList<?=intval($bID)?>" class="rssSummaryList">
+<div class="ccm-block-rss-displayer-wrapper">
+    <div class="ccm-block-rss-displayer">
 
-<? if( strlen($title)>0 ){ ?>
-	<div class="rssSummaryListTitle" style="margin-bottom:8px"><?=$title?></div>
-<? } ?>
 
-<? 
-$rssObj=$controller;
-$textHelper = Loader::helper("text"); 
+<?php if (strlen($title) > 0) {
+    ?>
+    <div class="ccm-block-rss-displayer-header">
+    	<h5><?=$title?></h5>
+    </div>
+<?php 
+} ?>
 
-if (!$dateFormat) {
-	$dateFormat = t('F jS');
-}
+<?php
+$rssObj = $controller;
+$textHelper = Loader::helper("text");
 
-if( strlen($errorMsg)>0 ){
-	echo $errorMsg;
-}else{
-
-	foreach($posts as $itemNumber=>$item) { 
-	
-		if( intval($itemNumber) >= intval($rssObj->itemsToDisplay) ) break;
-		?>
+if (isset($errorMsg) && strlen($errorMsg) > 0) {
+    echo $errorMsg;
+} else {
+    foreach ($posts as $itemNumber => $item) {
+        if (intval($itemNumber) >= intval($rssObj->itemsToDisplay)) {
+            break;
+        }
+        ?>
 		
-		<div class="rssItem">
-			<div class="rssItemTitle"> 
-				<a href="<?= $item->get_permalink(); ?>" <? if($rssObj->launchInNewWindow) echo 'target="_blank"' ?> >
-					<?= $item->get_title(); ?>
+		<div class="ccm-block-rss-displayer-item">
+			<div class="ccm-block-rss-displayer-item-title">
+				<a href="<?= $item->getLink();
+        ?>" <?php if ($rssObj->launchInNewWindow) {
+    echo 'target="_blank"';
+}
+        ?> >
+					<?= $item->getTitle();
+        ?>
 				</a>
 			</div>
-			<div class="rssItemDate"><?= $item->get_date($dateFormat); ?></div>
-			<div class="rssItemSummary">
-				<?
-				if( $rssObj->showSummary ){
-					echo $textHelper->shortText( strip_tags($item->get_description()) );
-				}
-				?>
+			<div class="ccm-block-rss-displayer-item-date"><?= h($this->controller->formatDateTime($item->getDateCreated()));
+        ?></div>
+			<div class="ccm-block-rss-displayer-item-summary">
+				<?php
+                if ($rssObj->showSummary) {
+                    echo $textHelper->shortText(strip_tags($item->getDescription()));
+                }
+        ?>
 			</div>
 		</div>
 	
-<?  }  
+<?php 
+    }
 }
 ?>
+    </div>
+
 </div>

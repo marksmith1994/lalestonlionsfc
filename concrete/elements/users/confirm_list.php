@@ -1,6 +1,7 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 // used when confirming bulk user operations.. would you like to do xyz to the following users??
-if(is_array($users)) { ?>
+if (is_array($users)) {
+    ?>
 <table class="table table-striped" width="100%" cellspacing="0" cellpadding="0" border="0">
 	<thead>
 		<tr>
@@ -10,13 +11,22 @@ if(is_array($users)) { ?>
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach($users as $ui) { ?>
+		<?php
+        $nh = Loader::helper('number');
+    foreach ($users as $ui) {
+        ?>
 		<tr>
-			<td><?php echo $ui->getUserName(); ?></td>
-			<td><?php echo $ui->getUserEmail(); ?></td>
-			<td><?php echo number_format($ui->getNumLogins(),0); ?></td>
+			<td><?php echo $ui->getUserName();
+        ?></td>
+			<td><?php echo $ui->getUserEmail();
+        ?></td>
+			<td><?php echo $nh->format($ui->getNumLogins(), 0);
+        ?></td>
 		</tr>
-		<?php } ?>
+		<?php 
+    }
+    ?>
 	</tbody>
 </table>
-<?php } ?>
+<?php 
+}

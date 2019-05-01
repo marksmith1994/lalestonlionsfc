@@ -1,6 +1,4 @@
-<?
-defined('C5_EXECUTE') or die("Access Denied.");
-$rssObj=$controller;
-?>
+<?php
 
-<?php  $bt->inc('form_setup_html.php',array('rssObj'=>$rssObj)); ?>
+defined('C5_EXECUTE') or die("Access Denied.");
+$this->inc('form_setup_html.php', array('rssObj' => $controller));

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+
+<schema version="0.3">
+	
+	<table name="btInfoBox">
+
+		<field name="bID" type="I">
+			<key />
+			<unsigned />
+		</field>
+		
+		<field name="fID" type="I">
+			<unsigned />
+			<default value="0" />
+		</field>
+		
+		<field name="title" type="X2">
+		</field>
+		
+		<field name="content_h" type="X2">
+		</field>
+		
+		<field name="reverseLayout" type="I">
+			<default value="0" />
+		</field>
+		
+		<field name="linkCID" type="I">
+		</field>
+		
+		<field name="isExternalURL" type="I">
+			<default value="0" />
+		</field>
+
+		<field name="video" type="X2">
+		</field>
+		
+		<field name="externalURL" type="C" size="255">
+		</field>
+
+		<field name="buttonText" type="C" size="255">
+		</field>
+
+	</table>
+
+</schema>

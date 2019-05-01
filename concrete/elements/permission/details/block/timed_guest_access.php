@@ -1,23 +1,23 @@
-<?
+<?php
 defined('C5_EXECUTE') or die("Access Denied.");
 $c = $b->getBlockCollectionObject();
 $arHandle = $b->getAreaHandle();
+use \Concrete\Core\Permission\Duration as PermissionDuration;
+
 $pk = PermissionKey::getByHandle('view_block');
 $pk->setPermissionObject($b);
 $list = $pk->getAccessListItems();
-foreach($list as $pa) { 
-	$pae = $pa->getAccessEntityObject(); 
-	if ($pae->getAccessEntityTypeHandle() == 'group') {
-		if ($pae->getGroupObject()->getGroupID() == GUEST_GROUP_ID) {
-			$pd = $pa->getPermissionDurationObject();
-			if (!is_object($pd)) {
-				$pd = new PermissionDuration();
-			}
-		}
-	}
+foreach ($list as $pa) {
+    $pae = $pa->getAccessEntityObject();
+    if ($pae->getAccessEntityTypeHandle() == 'group') {
+        if ($pae->getGroupObject()->getGroupID() == GUEST_GROUP_ID) {
+            $pd = $pa->getPermissionDurationObject();
+            if (!is_object($pd)) {
+                $pd = new PermissionDuration();
+            }
+        }
+    }
 }
-
-
 
 ?>
 <div class="ccm-ui" id="ccm-permissions-access-entity-wrapper">
@@ -34,8 +34,8 @@ foreach($list as $pa) {
 <?=Loader::element('permission/duration', array('pd' => $pd)); ?>
 
 <div class="dialog-buttons">
-	<input type="button" onclick="jQuery.fn.dialog.closeTop()" value="<?=t('Cancel')?>" class="btn" />
-	<input type="submit" onclick="$('#ccm-permissions-timed-guest-access-form').submit()" value="<?=t('Save')?>" class="btn primary ccm-button-right" />
+	<input type="button" onclick="jQuery.fn.dialog.closeTop()" value="<?=t('Cancel')?>" class="btn btn-default pull-left" />
+	<input type="submit" onclick="$('#ccm-permissions-timed-guest-access-form').submit()" value="<?=t('Save')?>" class="btn btn-primary pull-right" />
 </div>
 
 </form>
@@ -49,10 +49,13 @@ $(function() {
 			jQuery.fn.dialog.showLoader();
 		},
 		success: function(r) {
-			ccm_mainNavDisableDirectExit();
+            ConcreteToolbar.disableDirectExit();
 			jQuery.fn.dialog.hideLoader();
 			jQuery.fn.dialog.closeTop();
-			ccmAlert.hud(ccmi18n.scheduleGuestAccessSuccess, 2000, 'success', ccmi18n.scheduleGuestAccess);
+			ConcreteAlert.notify({
+			'message': ccmi18n.scheduleGuestAccessSuccess,
+			'title': ccmi18n.scheduleGuestAccess
+			});
 		}
 	});
 });

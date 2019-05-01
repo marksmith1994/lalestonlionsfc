@@ -1,9 +1,9 @@
-<?
+<?php
 defined('C5_EXECUTE') or die("Access Denied.");
 
-$subject = SITE.' '.t("Registration - A New User Has Registered");
+$subject = $siteName.' '.t("Registration - A New User Has Registered");
 
-/**
+/*
  * HTML BODY START
  */
 ob_start();
@@ -15,20 +15,20 @@ ob_start();
 <?= t('User Name') ?>: <b><?= $uName ?></b><br />
 <?= t('Email Address') ?>: <b><?= $uEmail ?></b><br />
 <br />
-<? if($attribs): ?>
+<?php if ($attribs): ?>
 	<ul>
-	<? foreach($attribs as $item): ?>
+	<?php foreach ($attribs as $item): ?>
 		<li><?= $item ?></li>
-	<? endforeach ?>
+	<?php endforeach ?>
 	</ul>
-<? endif ?>
+<?php endif ?>
 <br />
-<? t('This account may be managed directly at') ?><br />
-<a href="<?= BASE_URL.View::url('/dashboard/users/search?uID='.$uID) ?>"><?= BASE_URL.View::url('/dashboard/users/search?uID='.$uID) ?></a>
-<?
+<?php t('This account may be managed directly at') ?><br />
+<a href="<?= View::url('/dashboard/users/search', 'view', $uID) ?>"><?= View::url('/dashboard/users/search', 'view', $uID) ?></a>
+<?php
 
 $bodyHTML = ob_get_clean();
-/**
+/*
  * HTML BODY END
  *
  * ======================
@@ -46,19 +46,20 @@ ob_start();
 
 <?= t('Email Address') ?>: <?= $uEmail ?>
 
-<? if($attribs): ?>
-	<? foreach($attribs as $item): ?>
+<?php if ($attribs): ?>
+	<?php foreach ($attribs as $item): ?>
 		<?= $item ?>
 
-	<? endforeach ?>
-<? endif ?>
+	<?php endforeach ?>
+<?php endif ?>
 
-<? t('This account may be managed directly at') ?>
+<?php t('This account may be managed directly at') ?>
 
-<?= BASE_URL.View::url('/dashbard/users/search?uID='.$uID) ?>
-<?
+<?= View::url('/dashboard/users/search', 'view', $uID) ?>
+<?php
 
-$body = ob_end_clean();
-/**
+$body = ob_get_clean();
+ob_end_clean();
+/*
  * PLAIN TEXT BODY END
  */

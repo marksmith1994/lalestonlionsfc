@@ -1,132 +1,165 @@
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Rich Text Editor'), t('Control the options available for TinyMCE.'), false, false);?>
 <?php
-$h = Loader::helper('concrete/interface');
-?>	
-<form method="post" id="txt-editor-form" class="form-horizontal" action="<?php echo $this->url('/dashboard/system/basics/editor', 'txt_editor_config')?>">
-<div class="ccm-pane-body">
-	<?php echo $this->controller->token->output('txt_editor_config')?>
-	
-	<div class="row">
-      <div class="span5">
-      	<legend><h3><?=t('Toolbar Set')?></h3></legend>
-		<div class="control-group">
-            <label id="optionsCheckboxes"></label>
-            <div class="controls">
-			  <ul class="inputs-list">
-			    <li>
-			      <label>
-			        <input type="radio" name="CONTENTS_TXT_EDITOR_MODE" value="SIMPLE" <?php echo ( $txtEditorMode=='SIMPLE' || !strlen($txtEditorMode) )?'checked':''?> />
-			        <span><?php echo t('Simple')?></span>
-			      </label>
-			    </li>
-			    <li>
-			      <label>
-			        <input type="radio" name="CONTENTS_TXT_EDITOR_MODE" value="ADVANCED" <?php echo ($txtEditorMode=='ADVANCED')?'checked':''?> />
-			        <span><?php echo t('Advanced')?></span>
-			      </label>
-			    </li>
-			    <li>
-			      <label>
-			        <input type="radio" name="CONTENTS_TXT_EDITOR_MODE" value="OFFICE" <?php echo ($txtEditorMode=='OFFICE')?'checked':''?> />
-			        <span><?php echo t('Office')?></span>
-			      </label>
-			    </li>
-			    <li>
-			      <label class="disabled">
-			        <input type="radio" name="CONTENTS_TXT_EDITOR_MODE" value="CUSTOM" <?php echo ($txtEditorMode=='CUSTOM')?'checked':'' ?> /> 
-			        <span><?php echo t('Custom')?></span>
-			      </label>
-			    </li>
-			  </ul>
+/* @var Concrete\Core\Page\View\PageView $view */
+/* @var Concrete\Core\Validation\CSRF\Token $token */
+/* @var Concrete\Core\Form\Service\Form $form */
+
+/* @var bool $filemanager */
+/* @var bool $sitemap */
+
+/* @var Concrete\Core\Editor\PluginManager $manager */
+/* @var Concrete\Core\Editor\Plugin[] $plugins */
+/* @var string[] $selected_hidden */
+
+?>
+<style>
+@media (min-width: 992px) {
+    #ccm-editor-preview.sticky {
+        position: fixed;
+    }
+}
+</style>
+<form id="ccm-editor-config" method="post" class="ccm-dashboard-content-form" action="<?= $view->action('submit') ?>">
+    <?php $token->output('submit') ?>
+    <div class="row">
+        <div class="col-md-6">
+            <?= $form->label('', t('concrete5 Extensions')) ?>
+            <div class="checkbox">
+                <label>
+                    <?= $form->checkbox('enable_filemanager', 1, $filemanager) ?>
+                    <?= t('Enable file selection from file manager.') ?>
+                </label>
             </div>
-          </div>
-
-      </div>
-      <div class="span6">
-      	<legend><h3><?=t('Editor Dimensions')?></h3></legend>
-
-			<div class="clearfix">
-				<label for="xlInput"><?php echo t('Width ')?></label>
-				<div class="input"><?
-					if (!$textEditorWidth) { 
-						$textEditorWidth = 580;
-					}
-					?>
-				  <?=Loader::helper('form')->text('CONTENTS_TXT_EDITOR_WIDTH', $textEditorWidth, array('class' => 'span1'))?>
-				</div>
-			</div>
-			
-			<div class="clearfix">
-				<label for="xlInput"><?php echo t('Height ')?></label>
-				<div class="input"><?
-					if (!$textEditorHeight) { 
-						$textEditorHeight = 380;
-					}
-					?>
-				  <?=Loader::helper('form')->text('CONTENTS_TXT_EDITOR_HEIGHT', $textEditorHeight, array('class' => 'span1'))?>
-				</div>
-			</div>
- 
-      </div>
+            <div class="checkbox">
+                <label>
+                    <?= $form->checkbox('enable_sitemap', 1, $sitemap) ?>
+                    <?= t('Enable page selection from sitemap.') ?>
+                </label>
+            </div>
+            <?= $form->label('', t('Editor Plugins')) ?>
+            <?php
+            foreach ($plugins as $key => $plugin) {
+                if (!in_array($key, $selected_hidden)) {
+                    $description = $plugin->getDescription();
+                    ?>
+                    <div class="checkbox">
+                        <label>
+                            <?php
+                            echo $form->checkbox('plugin[]', $key, $manager->isSelected($key));
+                            if ($description !== '') {
+                                echo '<span class="launch-tooltip" title="', h($description), '">';
+                            }
+                            echo h($plugin->getName());
+                            if ($description !== '') {
+                                echo '</span>';
+                            }
+                            ?>
+                        </label>
+                    </div>
+                    <?php
+                }
+            }
+            ?>
+        </div>
+        <div class="col-md-6">
+            <div id="ccm-editor-preview" style="display: none">
+                <?= $form->label('', t('Editor Preview')) ?>
+                <div id="ccm-editor-preview-content"></div>
+            </div>
+        </div>
     </div>
-	<br/>
-		
-	<div id="text-editor-simple" style=" display:<?php echo ($txtEditorMode=='SIMPLE' || $txtEditorMode == '')?'block':'none' ?>">
-		<h4><?=t('Preview')?></h4>
-		<img src="<?=ASSETS_URL_IMAGES?>/editor_simple.png" width="630" height="65"  />
-	</div>
-	
-	<div id="text-editor-advanced" style=" display:<?php echo ($txtEditorMode=='ADVANCED')?'block':'none' ?>">
-		<h4><?=t('Preview')?></h4>
-		<img src="<?=ASSETS_URL_IMAGES?>/editor_advanced.png" width="630" height="81"  />
-	</div>
-	
-	<div id="text-editor-office" style=" display:<?php echo ($txtEditorMode=='OFFICE')?'block':'none' ?>">
-		<h4><?=t('Preview')?></h4>
-		<img src="<?=ASSETS_URL_IMAGES?>/editor_office.png" width="630" height="107"  />
-	</div>
-	
-	<div id="cstmEditorTxtAreaWrap" style=" display:<?php echo ($txtEditorMode=='CUSTOM')?'block':'none' ?>" >
-		<textarea wrap="off" name="CONTENTS_TXT_EDITOR_CUSTOM_CODE" cols="25" rows="20" style="width: 97%; height: 250px;"><?php echo $txtEditorCstmCode?></textarea>
-		<div class="ccm-note"><a target="_blank" href="http://tinymce.moxiecode.com/"><?php echo t('TinyMCE Reference')?></a></div>
-	</div>
-		
-
-	<script>		
-		$(function(){ 
-			$("input[name='CONTENTS_TXT_EDITOR_MODE']").each(function(i,el){ 
-				el.onchange=function(){isTxtEditorModeCustom();}
-			})	 	
-		});
-		function isTxtEditorModeCustom(){
-			$("#text-editor-simple").hide();
-			$("#text-editor-advanced").hide();
-			$("#text-editor-office").hide();
-			if($("input[name='CONTENTS_TXT_EDITOR_MODE']:checked").val()=='SIMPLE'){
-				$('#text-editor-simple').css('display','block');
-			}
-			if($("input[name='CONTENTS_TXT_EDITOR_MODE']:checked").val()=='ADVANCED'){
-				$('#text-editor-advanced').css('display','block');
-			}
-			if($("input[name='CONTENTS_TXT_EDITOR_MODE']:checked").val()=='OFFICE'){
-				$('#text-editor-office').css('display','block');
-			}
-			if($("input[name='CONTENTS_TXT_EDITOR_MODE']:checked").val()=='CUSTOM'){
-				$('#cstmEditorTxtAreaWrap').css('display','block');
-			}else{
-				$('#cstmEditorTxtAreaWrap').css('display','none');
-			}
-		}
-	</script>
-</div>
-<div class="ccm-pane-footer">
-		<?php  
-		$b1 = $h->submit(t('Save'), 'txt-editor-form', 'right', 'primary');
-		print $b1;
-		?>
-</div>
+            
+    <div class="ccm-dashboard-form-actions-wrapper">
+        <div class="ccm-dashboard-form-actions">
+            <button class="pull-left btn btn-default" id="ccm-editor-preview-toggle"><?= t('Preview') ?></button>
+            <button class="pull-right btn btn-primary" type="submit"><?= t('Save') ?></button>
+        </div>
+    </div>
 </form>
 
+<script>
+$(document).ready(function() {
+var $window = $(window),
+    $togglePreview = $('#ccm-editor-preview-toggle'),
+    $preview = $('#ccm-editor-preview'),
+    $previewContainer = $preview.closest('div:not(#ccm-editor-preview)');
+    $previewContent = $('#ccm-editor-preview-content'),
+    previewEnabled = false;
 
+function showPreview(show) {
+    show = !!show;
+    if (previewEnabled === show) {
+        return;
+    }
+    previewEnabled = show;
+    $togglePreview
+        .removeClass(previewEnabled ? 'btn-default' : 'btn-success')
+        .addClass(previewEnabled ? 'btn-success' : 'btn-default')
+    ;
+    if (previewEnabled) {
+        updatePreview();
+    } else {
+        $preview.hide();
+    }
+}
 
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper(false);?>
+function updatePreview() {
+    if (!previewEnabled) {
+        return;
+    }
+    var data = {
+        <?= json_encode($token::DEFAULT_TOKEN_NAME) ?>: <?= json_encode($token->generate('ccm-editor-preview'))?>,
+        previewHtml: $('textarea[name="preview"]').val() || ''
+    };
+    $('#ccm-editor-config input[type="checkbox"]:checked').each(function() {
+        var $chk = $(this), name = $chk.attr('name');
+        if (name.slice(-2) === '[]') {
+            name = name.substr(0, name.length - 2);
+            if (!(data[name] instanceof Array)) {
+                data[name] = [];
+            }
+            data[name].push($chk.val());
+        } else {
+            data[name] = $chk.val();
+        }
+    });
+    $.ajax({
+        method: 'POST',
+        url: <?= json_encode((string) URL::to('/ccm/system/dialogs/editor/settings/preview')) ?>,
+        data: data
+    })
+    .success(function (data) {
+        $preview.show();
+        $previewContent.html(data);
+    })
+}
+
+var previewOffsetTop = $previewContainer.offset().top, previewOffsetLimit = $('.ccm-dashboard-page-header').offset().top;
+function updatePreviewView() {
+    if ($window.scrollTop() >= previewOffsetTop - previewOffsetLimit) {
+        $preview
+            .addClass('sticky')
+            .css('top', previewOffsetTop - $previewContainer.offset().top + previewOffsetLimit + 'px');
+    } else {
+        $preview.removeClass('sticky');
+    }
+    if ($preview.css('position') === 'fixed') {
+        $preview.width($previewContainer.width());
+    } else {
+        $preview.width('auto');
+    }
+}
+updatePreviewView();
+$window.on('scroll resize', function() {
+    updatePreviewView();
+});
+    
+$togglePreview.on('click', function(e) {
+    e.preventDefault();
+    showPreview(!previewEnabled);
+});
+$('#ccm-editor-config input').on('change', function() {
+    updatePreview();
+});
+
+});
+</script>

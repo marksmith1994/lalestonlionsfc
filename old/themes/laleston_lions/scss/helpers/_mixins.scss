@@ -1,0 +1,29 @@
+// fonts
+@mixin bodyfont($weight:regular){
+    font-family: "open-sans", sans-serif;
+    
+    @if ($weight == regular){
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    @else if ($weight == bold){
+        font-weight: 700;
+        font-style: normal;
+    }
+}
+
+@mixin headerfont($weight:bold){
+    font-family: 'Viga', sans-serif;
+    
+    @if ($weight == regular){
+        font-weight: 400;
+        font-style: normal;
+    }
+
+    @else if ($weight == bold){
+        // font-weight: 700;
+        font-weight: 400;
+        font-style: normal;
+    }
+}

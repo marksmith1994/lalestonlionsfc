@@ -1,16 +1,29 @@
-<?php defined('C5_EXECUTE') or die("Access Denied.");  ?>
-<div class="ccm-tags-display">
-<?php if(strlen($title)) {
-	?><h4><?php echo $title ?></h4><?php
-}
-if($options instanceof SelectAttributeTypeOptionList && $options->count() > 0) {
-	?><ul class="ccm-tag-list">
-		<?php foreach($options as $opt) {
-			$qs = $akc->field('atSelectOptionID') . '[]=' . $opt->getSelectAttributeOptionID();
-			?><li <?php echo ($selectedOptionID == $opt->getSelectAttributeOptionID()?'class="ccm-tag-selected"':'')?>><? if ($target instanceof Page) { ?>
-				<a href="<?=$navigation->getLinkToCollection($target)?>?<?=$qs?>"><?php echo $opt ?></a><? }  else { echo $opt; }?></li><?php 
-		}?>	
-	</ul>
+<?php defined('C5_EXECUTE') or die('Access Denied.'); ?>
+
+<?php if (isset($options) && count($options) > 0) { ?>
+    <div class="ccm-block-tags-wrapper">
+        <?php if ($title) { ?>
+            <div class="ccm-block-tags-header">
+                <h5><?=$title?></h5>
+            </div>
+        <?php } ?>
+
+        <?php foreach ($options as $option) { ?>
+            <?php if (isset($target) && $target) { ?>
+                <a href="<?=$controller->getTagLink($option) ?>">
+                    <?php if (isset($selectedTag) && mb_strtolower($option->getSelectAttributeOptionValue()) == mb_strtolower($selectedTag)) { ?>
+                        <span class="ccm-block-tags-tag ccm-block-tags-tag-selected label"><?=$option->getSelectAttributeOptionValue()?></span>
+                    <?php } else { ?>
+                        <span class="ccm-block-tags-tag label"><?=$option->getSelectAttributeOptionValue()?></span>
+                    <?php } ?>
+                </a>
+            <?php } else { ?>
+                <?php if (isset($selectedTag) && mb_strtolower($option->getSelectAttributeOptionValue()) == mb_strtolower($selectedTag)) { ?>
+                    <span class="ccm-block-tags-tag ccm-block-tags-tag-selected label"><?=$option->getSelectAttributeOptionValue()?></span>
+                <?php } else { ?>
+                    <span class="ccm-block-tags-tag label"><?=$option->getSelectAttributeOptionValue()?></span>
+                <?php } ?>
+            <?php } ?>
+        <?php } ?>
+    </div>
 <?php } ?>
-	<div style="clear: both"></div>
-</div>

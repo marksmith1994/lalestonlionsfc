@@ -1,63 +1,89 @@
-<?
+<?php
 defined('C5_EXECUTE') or die("Access Denied.");
 $valt = Loader::helper('validation/token');
 $token = '&' . $valt->getParameter();
-$html = Loader::helper('html');
 $dh = Loader::helper('concrete/dashboard');
 
 if (isset($cp)) {
-	if ($cp->canViewToolbar()) { 
+    if ($cp->canViewToolbar()) {
+        ?>
 
-?>
-
-<style type="text/css">html {margin-top: 49px !important;} </style>
+<style type="text/css">div.ccm-page {padding-top: 48px !important;} </style>
 
 <script type="text/javascript">
-<?
+<?php
 $valt = Loader::helper('validation/token');
-print "var CCM_SECURITY_TOKEN = '" . $valt->generate() . "';";
-?>
+        echo "var CCM_SECURITY_TOKEN = '" . $valt->generate() . "';";
+        ?>
 </script>
 
-<?
+<?php
 $dh = Loader::helper('concrete/dashboard');
-if (!$dh->inDashboard()) {
-	$this->addHeaderItem($html->css('ccm.app.css'));
-	if (MOBILE_THEME_IS_ACTIVE == true) {
-		$this->addHeaderItem($html->css('ccm.app.mobile.css'));
-	}
-	$this->addHeaderItem($html->css('jquery.ui.css'));
-	$this->addFooterItem('<div id="ccm-page-controls-wrapper"><div id="ccm-toolbar"></div></div>');
-	
-	$this->addFooterItem('<script type="text/javascript" src="' . REL_DIR_FILES_TOOLS_REQUIRED . '/i18n_js"></script>'); 
-	$this->addHeaderItem($html->javascript('jquery.js'));
-	$this->addFooterItem($html->javascript('jquery.ui.js'));
-	$this->addFooterItem($html->javascript('jquery.form.js'));
-	$this->addFooterItem($html->javascript('jquery.rating.js'));
-	$this->addFooterItem($html->javascript('bootstrap.js'));
-	$this->addFooterItem($html->javascript('ccm.app.js'));
-	if (ENABLE_PROGRESSIVE_PAGE_REINDEX && Config::get('DO_PAGE_REINDEX_CHECK')) {
-		$this->addHeaderItem('<script type="text/javascript">$(function() { ccm_doPageReindexing(); });</script>');
-	}
-	$cih = Loader::helper('concrete/interface');
-	if (LANGUAGE != 'en') {
-		$this->addFooterItem($html->javascript('i18n/ui.datepicker-' . LANGUAGE . '.js'));
-		$this->addFooterItem('<script type="text/javascript">$(function() { jQuery.datepicker.setDefaults({dateFormat: \'yy-mm-dd\'}); });</script>');
-	}
-	if (!Config::get('SEEN_INTRODUCTION')) {
-		$this->addHeaderItem('<script type="text/javascript">$(function() { ccm_showAppIntroduction(); });</script>');
-		Config::save('SEEN_INTRODUCTION', 1);
-	}
-	$this->addFooterItem($html->javascript('tiny_mce/tiny_mce.js'));
-}
+        $v = View::getInstance();
+        $request = \Request::getInstance();
 
-$cID = ($c->isAlias()) ? $c->getCollectionPointerOriginalID() : $c->getCollectionID();
-$btask = '';
-if (Loader::helper('validation/strings')->alphanum($_REQUEST['btask'])) {
-	$btask = $_REQUEST['btask'];
-}
-$this->addFooterItem('<script type="text/javascript" src="' . REL_DIR_FILES_TOOLS_REQUIRED . '/page_controls_menu_js?cID=' . $cID . '&amp;cvID=' . $cvID . '&amp;btask=' . $btask . '&amp;ts=' . time() . '"></script>'); 
+        $v->requireAsset('core/app');
 
-	}
-	
+        $editMode = $c->isEditMode();
+        $tools = REL_DIR_FILES_TOOLS_REQUIRED;
+        $htmlTagClasses = 'ccm-toolbar-visible';
+
+        if ($c->isEditMode()) {
+            $startEditMode = 'new Concrete.EditMode();';
+            $htmlTagClasses .= ' ccm-edit-mode';
+        } else {
+            $startEditMode = '';
+        }
+
+        if (!$dh->inDashboard()) {
+            $launchPageComposer = '';
+            if ($cp->canEditPageContents() && $request->get('ctask') == 'check-out-first') {
+                $pagetype = $c->getPageTypeObject();
+                if (is_object($pagetype) && $pagetype->doesPageTypeLaunchInComposer()) {
+                    $launchPageComposer = "$('a[data-launch-panel=page]').toggleClass('ccm-launch-panel-active'); ConcretePanelManager.getByIdentifier('page').show();";
+                }
+            }
+            $panelDashboard = URL::to('/ccm/system/panels/dashboard');
+            $panelPage = URL::to('/ccm/system/panels/page');
+            $panelSitemap = URL::to('/ccm/system/panels/sitemap');
+            $panelAdd = URL::to('/ccm/system/panels/add');
+            $panelCheckIn = URL::to('/ccm/system/panels/page/check_in');
+            $panelRelations = URL::to('/ccm/system/panels/page/relations');
+
+            $js = <<<EOL
+<script type="text/javascript">$(function() {
+	$('html').addClass('$htmlTagClasses');
+	ConcretePanelManager.register({'identifier': 'dashboard', 'position': 'right', url: '{$panelDashboard}'});
+	ConcretePanelManager.register({'identifier': 'page', url: '{$panelPage}'});
+	ConcretePanelManager.register({'identifier': 'sitemap', 'position': 'right', url: '{$panelSitemap}'});
+	ConcretePanelManager.register({'identifier': 'page_relations', 'position': 'right', url: '{$panelRelations}'});
+	ConcretePanelManager.register({'identifier': 'add-block', 'translucent': false, 'position': 'left', url: '{$panelAdd}', pinable: true});
+	ConcretePanelManager.register({'identifier': 'check-in', 'position': 'left', url: '{$panelCheckIn}'});
+	ConcreteToolbar.start();
+	{$startEditMode}
+	{$launchPageComposer}
+});
+</script>
+
+EOL;
+        } else {
+            $js = <<<EOL
+<script type="text/javascript">$(function() {
+	$('html').addClass('ccm-toolbar-visible');
+	{$startEditMode}
+});
+</script>
+
+EOL;
+        }
+        $v->addFooterItem($js);
+
+        if (Config::get('concrete.misc.enable_progressive_page_reindex') && Config::get('concrete.misc.do_page_reindex_check')) {
+            $v->addFooterItem('<script type="text/javascript">$(function() { ccm_doPageReindexing(); });</script>');
+        }
+        $cih = Loader::helper('concrete/ui');
+        if (Localization::activeLanguage() != 'en') {
+            $v->addFooterItem('<script type="text/javascript">$(function() { jQuery.datepicker.setDefaults({dateFormat: \'yy-mm-dd\'}); });</script>');
+            }
+        }
 }

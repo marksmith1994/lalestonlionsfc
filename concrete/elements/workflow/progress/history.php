@@ -1,12 +1,16 @@
-<?php defined('C5_EXECUTE') or die("Access Denied."); ?>
+<?php defined('C5_EXECUTE') or die("Access Denied.");
 
-<?
-$records = WorkflowProgressHistory::getList($wp);
-foreach($records as $r) { ?>
+$dh = Core::make('helper/date'); /* @var $dh \Concrete\Core\Localization\Service\Date */
+
+$records = \Concrete\Core\Workflow\Progress\History::getList($wp);
+foreach ($records as $r) {
+    ?>
 	
 	<div>
-		<strong><?=date(DATE_APP_GENERIC_MDYT_FULL, strtotime($r->getWorkflowProgressHistoryTimestamp()))?></strong>. 
-		<?=$r->getWorkflowProgressHistoryDescription();?>
+		<strong><?=$dh->formatDateTime($r->getWorkflowProgressHistoryTimestamp(), true)?></strong>. 
+		<?=$r->getWorkflowProgressHistoryDescription();
+    ?>
 	</div>	
 	
-<? } ?>
+<?php 
+} ?>

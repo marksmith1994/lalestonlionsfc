@@ -1,33 +1,24 @@
-<?
+<?php
 defined('C5_EXECUTE') or die("Access Denied.");
+use \Concrete\Core\Page\Theme\File as PageThemeFile;
 
 // HELPERS
-$ci = Loader::helper('concrete/interface');
+$ci = Loader::helper('concrete/ui');
 
 ?>
 
-		<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Inspect Theme'), false, 'span10 offset1', false);?>
+
+    <form method="post" id="ccm-inspect-form" action="<?=$view->url('/dashboard/pages/themes/inspect/', 'activate_files', $pThemeID)?>">
     
-    <form method="post" id="ccm-inspect-form" action="<?=$this->url('/dashboard/pages/themes/inspect/', 'activate_files', $ptID)?>">
-    
-	<div class="ccm-pane-body" style="padding-top:10px;">
-    
-    	<h3><?=t("Theme name: ").$pageTheme->getThemeName()?></h3>
-        
+    	<p class="lead"><?=t("%s Theme", $pageTheme->getThemeDisplayName())?></p>
+
         <div class="row">
-        
-            <div class="span3">
-            	<h5><?=t('Thumbnail')?></h5>
-                <div class="well" style="padding:14px;">
-                	<div class="ccm-themes-thumbnail" style="padding:4px;background-color:#FFF;border-radius:3px;border:1px solid #DDD;">
-                    	<?=$pageTheme->getThemeThumbnail()?>
-                    </div>
-                </div>
+            <div class="col-sm-2">
+                <?=$pageTheme->getThemeThumbnail()?>
             </div>
-        
-            <div class="span6">
-                <h5><?=t('Files in Theme')?></h5>
-                <table border="0" cellspacing="0" cellpadding="0" class="table table-striped table-bordered">            
+
+            <div class="col-sm-10">
+                <table border="0" cellspacing="0" cellpadding="0" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th><?=t('File')?></th>
@@ -37,25 +28,31 @@ $ci = Loader::helper('concrete/interface');
                     </thead>
                     <tbody>
                         
-                    <?
+                    <?php
                     $txt = Loader::helper('text');
                     $pf = 0;
-                    
-                        if (count($files) == 0) { ?>
+
+                        if (count($files) == 0) {
+                            ?>
                         <tr>
                             <td colspan="3">
                                 <?=t('There are no templates in this file.')?>
                             </td>
                         </tr>
-                        <? }
-                    
-                        foreach ($files as $f) { ?>
+                        <?php 
+                        }
+
+                        foreach ($files as $f) {
+                            ?>
                         <tr class="inputs-list">
                             <td><?=$f->getFilename()?></td>
-                            <td><?
-                                switch($f->getType()) {
+                            <td><?php
+                                switch ($f->getType()) {
                                     case PageThemeFile::TFTYPE_VIEW:
                                         print t("Wrapper for static pages.");
+                                        break;
+                                    case PageThemeFile::TFTYPE_PAGE_CLASS:
+                                        print t("Custom page class file.");
                                         break;
                                     case PageThemeFile::TFTYPE_DEFAULT:
                                         print t("Default template.");
@@ -63,18 +60,18 @@ $ci = Loader::helper('concrete/interface');
                                     case PageThemeFile::TFTYPE_SINGLE_PAGE:
                                         print t("Template for internal concrete5 page.");
                                         break;
-                                    case PageThemeFile::TFTYPE_PAGE_TYPE_NEW:
+                                    case PageThemeFile::TFTYPE_PAGE_TEMPLATE_NEW:
                                         print t("New template.");
                                         break;
-                                    case PageThemeFile::TFTYPE_PAGE_TYPE_EXISTING:
-                                        print t("Template for existing page type.");
+                                    case PageThemeFile::TFTYPE_PAGE_TEMPLATE_EXISTING:
+                                        print t("Existing page template.");
                                         break;
                                 }
                                 // END Switch
                             ?>
                             </td>
-                            <td><?
-                                switch($f->getType()) {
+                            <td><?php
+                                switch ($f->getType()) {
                                     case PageThemeFile::TFTYPE_VIEW:
                                         print t('None. This file will automatically be used.');
                                         break;
@@ -82,21 +79,22 @@ $ci = Loader::helper('concrete/interface');
                                         print t('None. This file will automatically be used for pages without a template.');
                                         break;
                                     case PageThemeFile::TFTYPE_SINGLE_PAGE:
-                                        print t('None. This file will automatically be used by the <strong>%s</strong> page.',$txt->unhandle($f->getHandle()) );
+                                        print t('None. This file will automatically be used by the <strong>%s</strong> page.', $txt->unhandle($f->getHandle()));
                                         break;
-                                    case PageThemeFile::TFTYPE_PAGE_TYPE_NEW:
+                                    case PageThemeFile::TFTYPE_PAGE_TEMPLATE_NEW:
                                         $pf++;
-                                        print '<label><input type="checkbox" value="' . $f->getHandle() . '" name="pageTypes[]" checked /> <span>'.t('Create page type.').'</span></label>';
+                                        echo '<label><input type="checkbox" value="' . $f->getHandle() . '" name="pageTemplates[]" checked /> <span>'.t('Create page template.').'</span></label>';
                                         break;
-                                    case PageThemeFile::TFTYPE_PAGE_TYPE_EXISTING:
-                                        print t('None. This file will automatically be used by the <strong>%s</strong> page type.',$txt->unhandle($f->getHandle()) );
+                                    case PageThemeFile::TFTYPE_PAGE_TEMPLATE_EXISTING:
+                                        print t('None. This file will be used by pages with the <strong>%s</strong> template.', $txt->unhandle($f->getHandle()));
                                         break;
                                 }
                                 // END Switch
                             ?></td>
                         </tr>
                         
-                        <? } // END FOREACH ?>
+                        <?php 
+                        } // END FOREACH ?>
                     
                     </tbody>
                 </table>        
@@ -104,16 +102,17 @@ $ci = Loader::helper('concrete/interface');
         
         </div>
 	
-	</div>
-    
-    <div class="ccm-pane-footer">
-        <?
-        print $ci->button(t('Return to Themes'), $this->url('/dashboard/pages/themes'), 'left');
-        if ($pf > 0) { 
-            print $ci->submit(t('Ok'), 'ccm-inspect-form', 'right', 'primary'); ?>
-        <? }?>
+
+    <div class="ccm-dashboard-form-actions-wrapper">
+        <div class="ccm-dashboard-form-actions">
+        <?php
+        echo $ci->button(t('Return to Themes'), $view->url('/dashboard/pages/themes'), 'left');
+        if ($pf > 0) {
+            echo $ci->submit(t('Ok'), 'ccm-inspect-form', 'right', 'btn-primary');
+            ?>
+        <?php 
+        }?>
+        </div>
     </div>
-    
+
     </form>
-    
-    <?=Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper(false)?>

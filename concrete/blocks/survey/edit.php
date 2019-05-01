@@ -1,46 +1,104 @@
-<? defined('C5_EXECUTE') or die("Access Denied."); ?>
+<?php defined('C5_EXECUTE') or die("Access Denied."); ?>
 <style type="text/css">
-div.survey-block-option {
-	position: relative; border-bottom: 1px solid #ddd; padding-bottom: 3px; padding-top: 3px;
-}
+    div.survey-block-option {
+        position: relative;
+        padding: 6px;
+    }
 
-div.survey-block-option img {
-	position: absolute; top: 3px; right: 0px;
-}
+    div.survey-block-option:hover {
+        background: #e7e7e7;
+        border-radius: 4px;
+    }
+
+    div.survey-block-option img {
+        position: absolute;
+        top: 3px;
+        right: 0px;
+    }
 
 </style>
+<div class="ccm-ui survey-block-edit">
+    <div class="form-group">
+        <label for="questionEntry" class="control-label"><?= t('Question') ?></label>
+        <input type="text" name="question" value="<?= $controller->getQuestion() ?>"
+               class="form-control"/>
+    </div>
+    <div class="form-group">
+        <label for="requiresRegistration" class="control-label"><?= t('Target Audience') ?></label>
+
+        <div class="radio">
+            <label>
+                <input id="requiresRegistration" type="radio" value="0" name="requiresRegistration"
+                       style="vertical-align: middle" <?php if (!$controller->requiresRegistration()) {
+        ?> checked <?php
+    } ?> />&nbsp;<?= t(
+                    'Public') ?>
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" value="1" name="requiresRegistration"
+                       style="vertical-align: middle" <?php if ($controller->requiresRegistration()) {
+        ?> checked <?php
+    } ?> />&nbsp;<?= t(
+                    'Only Registered Users') ?>
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label"><?= t('Survey Options') ?></label>
+
+        <div class="poll-options">
+            <?php
+            $options = $controller->getPollOptions();
+            if (count($options) == 0) {
+                ?>
+                <div class="empty">
+                    <?= t('None') ?>
+                </div>
+                <?php
+
+            } else {
+                foreach ($options as $opt) {
+                    ?>
+                    <div class="survey-block-option">
+                        <a href="#" class="pull-right delete">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                        <?= h($opt->getOptionName()) ?>
+                        <input type="hidden" name="survivingOptionNames[]"
+                               value="<?= h($opt->getOptionName()) ?>"/>
+                    </div>
+                <?php
+
+                }
+            } ?>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="optionEntry" class="control-label"><?= t('Add Option') ?></label>
+
+        <div class="input-group">
+            <input type="text" name="optionValue" class="option-value form-control"/>
+            <span class="input-group-btn">
+                <button class="add-option btn btn-primary" type="button">
+                    <?php echo t('Add'); ?>
+                </button>
+            </span>
+        </div>
+    </div>
+    <script type="text/template" role="option">
+        <div class="survey-block-option">
+            <a href="#" class="delete pull-right">
+                <i class="fa fa-trash-o"></i>
+            </a>
+            <%- value %>
+            <input type="hidden" name="pollOption[]"
+                   value="<%- value %>"/>
+        </div>
+    </script>
+</div>
 <script type="text/javascript">
-	var currentOption = <?=count($controller->options)?>;
+    Concrete.event.fire('survey-edit-open');
 </script>
-<div class="ccm-ui">
-
-<strong><?=t('Question')?></strong><br/>
-<input type="text" style="width: 320px" name="question" value="<?=$controller->getQuestion()?>" />
-<br><br>
-
-<strong><?=t('Open to all site visitors?')?></strong><br/>
-<input type="radio" value="0" name="requiresRegistration" style="vertical-align: middle" <? if (!$controller->requiresRegistration()) { ?> checked <? } ?> />&nbsp;<?=t('Yes')?>
-&nbsp;&nbsp;
-<input type="radio" value="1" name="requiresRegistration" style="vertical-align: middle" <? if ($controller->requiresRegistration()) { ?> checked <? } ?> />&nbsp;<?=t('No. Registration is required to answer.')?>
-<br><br>
-
-<strong><?=t('Options')?></strong>
-<div id="pollOptions">
-<? 
-$options = $controller->getPollOptions();
-if (count($options) == 0) {
-	echo t("None");
-} else {
-	foreach($options as $opt) { ?>		
-        <div class="survey-block-option" id="option<?=$opt->getOptionID()?>"><a href="#" onclick="removeOption(<?=$opt->getOptionID()?>); return false"><img src="<?=ASSETS_URL_IMAGES?>/icons/delete_small.png" /></a> <?=$opt->getOptionName()?>
-        <input type="hidden" name="survivingOptionNames[]" value="<?=htmlspecialchars($opt->getOptionName())?>" />
-        </div>		
-	<? }
-} ?>
-</div>
-<br/><br/>
-<strong><?=t('Add option')?></strong><br/>
-
-<input type="text" name="optionValue" id="ccm-survey-optionValue" style="width: 320px" />
-<input type="button" onclick="addOption()" value="add" class="btn small" />
-</div>

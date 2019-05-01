@@ -1,62 +1,87 @@
-<?
-defined('C5_EXECUTE') or die("Access Denied.");
+<?php defined('C5_EXECUTE') or die("Access Denied.");
+
 $sh = Loader::helper('concrete/dashboard/sitemap');
-
-if (isset($_REQUEST['reveal'])) {
-	$nc = Page::getByID($_REQUEST['reveal']);
-	$nh = Loader::helper('navigation');
-	$cArray = $nh->getTrailToCollection($nc);
-	foreach($cArray as $co) {
-		ConcreteDashboardSitemapHelper::addOpenNode($co->getCollectionID());
-	}
-	ConcreteDashboardSitemapHelper::addOneTimeActiveNode($_REQUEST['reveal']);
-}
-
-$nodes = $sh->getSubNodes(0, 1, false, true);
-$instanceID = time();
-$listHTML = $sh->outputRequestHTML($instanceID, 'full', false, $nodes);
-
 ?>
 
-<script type="text/javascript">
-	var CCM_LAUNCHER_SITEMAP = 'full';
-	$(function() {
-		ccmSitemapLoad('<?=$instanceID?>', 'full');
-	});
+<div class="ccm-dashboard-header-buttons btn-group">
+    <button type="button" class="btn btn-default dropdown-toggle" data-button="attribute-type" data-toggle="dropdown">
+        <?=t('Options')?> <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <?php if ($includeSystemPages) { ?>
+            <li><a href="<?=$view->action('include_system_pages', 0)?>"><span class="text-success"><i class="fa fa-check"></i> <?=t('Include System Pages in Sitemap')?></span></a></li>
+        <?php } else { ?>
+            <li><a href="<?=$view->action('include_system_pages', 1)?>"><?=t('Include System Pages in Sitemap')?></a></li>
+        <?php } ?>
+
+
+        <?php if ($displayDoubleSitemap) { ?>
+            <li><a href="<?=$view->action('display_double_sitemap', 0)?>"><span class="text-success"><i class="fa fa-check"></i> <?=t('View 2-Up Sitemap')?></span></a></li>
+        <?php } else { ?>
+            <li><a href="<?=$view->action('display_double_sitemap', 1)?>"><?=t('View 2-Up Sitemap')?></a></li>
+        <?php } ?>
+    </ul>
+</div>
+
+
+<?php if ($sh->canRead()) { ?>
+
+<?php
+$u = new User();
+if ($u->isSuperUser()) {
+    if (Queue::exists('copy_page')) {
+        $q = Queue::get('copy_page');
+        if ($q->count() > 0) { ?>
+		<div class="alert alert-warning">
+			<?=t('Page copy operations pending.')?>
+			<button class="btn btn-xs btn-default pull-right" onclick="ConcreteSitemap.refreshCopyOperations()"><?=t('Resume Copy')?></button>
+		</div>
+	<?php }
+    }
+}
+    ?>
+
+    <?php if ($displayDoubleSitemap) { ?>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="ccm-dashboard-full-sitemap-container" data-container="sitemap"></div>
+            </div>
+            <div class="col-md-6">
+                <div class="ccm-dashboard-full-sitemap-container" data-container="sitemap" data-sitemap-index="1"></div>
+            </div>
+        </div>
+
+
+    <?php } else {  ?>
+        <div class="ccm-dashboard-full-sitemap-container" data-container="sitemap"></div>
+    <?php } ?>
+
+<?php
+} else {
+?>
+<p><?=t("You do not have access to the sitemap."); ?></p>
+<?php
+}
+?>
+
+<script>
+$(function() {
+    $('div[data-container=sitemap]').each(function() {
+        var $my = $(this);
+        $my.concreteSitemap({
+            includeSystemPages: <?= $includeSystemPages ? 1 : 0 ?>,
+            sitemapIndex: parseInt($my.data('sitemap-index'), 10) || 0
+        });
+    });
+
+    $('input[name=includeSystemPages]').on('click', function() {
+        var $tree = $('div#ccm-full-sitemap-container div.ccm-sitemap-tree');
+        $tree.fancytree('destroy');
+
+        $('#ccm-full-sitemap-container').html('').concreteSitemap({
+            includeSystemPages: $('input[name=includeSystemPages]').is(':checked')
+        });
+    });
+});
 </script>
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Sitemap'), t('The sitemap allows you to view your site as a tree and easily organize its hierarchy.'), 'span10 offset1', false);?>
-<div class="ccm-pane-options">
-	<a href="javascript:void(0)" onclick="ccm_paneToggleOptions(this)" class="ccm-icon-option-<? if ($_SESSION['dsbSitemapShowSystem'] == 1) { ?>open<? } else { ?>closed<? } ?>"><?=t('Options')?></a>
-	<div class="ccm-pane-options-content" <? if ($_SESSION['dsbSitemapShowSystem'] == 1) { ?> style="display: block" <? } ?>>
-		<form>
-		<div id="ccm-show-all-pages" class="clearfix">
-			<label for="ccm-show-all-pages-cb"><?=t('Show System Pages')?></label>
-			<div class="input">
-			<ul class="inputs-list">
-				<li><input type="checkbox" id="ccm-show-all-pages-cb" <? if ($_SESSION['dsbSitemapShowSystem'] == 1) { ?> checked <? } ?> /></li>
-			</ul>		
-			</div>
-		</div>
-		</form>
-	</div>
-</div>
-<div class="ccm-pane-body ccm-pane-body-footer">
-	<? if ($sh->canRead()) { ?>
-	
-		<div id="ccm-sitemap-message"></div>
-	
-		
-		<div id="tree" sitemap-instance-id="<?=$instance_id?>">
-			<ul id="tree-root0" tree-root-node-id="0" sitemap-mode="full" sitemap-instance-id="<?=$instanceID?>">
-			<?=$listHTML?>
-			</ul>
-		</div>
-		
-	
-	<? } else { ?>
-	
-		<p><?=t("You do not have access to the sitemap.");?></p>
-	
-	<? } ?>
-</div>
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper()?>

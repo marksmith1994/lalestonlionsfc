@@ -1,7 +1,7 @@
 <?php defined('C5_EXECUTE') or die("Access Denied."); ?>
-<? 
-$form = Loader::helper('form'); 
-$ih = Loader::helper("concrete/interface");
+<?php
+$form = Loader::helper('form');
+$ih = Loader::helper("concrete/ui");
 $valt = Loader::helper('validation/token');
 
 $wfName = $workflow->getWorkflowName();
@@ -9,22 +9,22 @@ $type = $workflow->getWorkflowTypeObject();
 
 ?>
 
-<div class="control-group">
 <fieldset>
 <legend><?=t("Workflow Basics")?></legend>
 
-<div class="control-group">
+<div class="form-group">
 	<?=$form->label('wfName', t('Name'))?>
-	<div class="controls">
+	<div class="input-group">
 		<?=$form->text('wfName', $wfName)?>
+		<span class="input-group-addon"><i class="fa fa-asterisk"></i></span>
 	</div>
 </div>
-</fieldset></div>
+</fieldset>
 
-<? 
-if ($type->getPackageID() > 0) { 
-	@Loader::packageElement('workflow/types/' . $type->getWorkflowTypeHandle()  . '/edit_type_form', $type->getPackageHandle(), array('type' => $type, 'workflow' => $workflow));
+<?php
+if ($type->getPackageID() > 0) {
+    @Loader::packageElement('workflow/types/' . $type->getWorkflowTypeHandle()  . '/edit_type_form', $type->getPackageHandle(), array('type' => $type, 'workflow' => $workflow));
 } else {
-	@Loader::element('workflow/types/' . $type->getWorkflowTypeHandle() . '/edit_type_form', array('type' => $type, 'workflow' => $workflow));
+    @Loader::element('workflow/types/' . $type->getWorkflowTypeHandle() . '/edit_type_form', array('type' => $type, 'workflow' => $workflow));
 }
 ?>

@@ -1,11 +1,20 @@
-<? 
+<?php
 defined('C5_EXECUTE') or die("Access Denied.");
-$includeAssetLibrary = true;
 $al = Loader::helper('concrete/asset_library');
 ?>
-<h2><?=t('File')?></h2>
-<?=$al->file('ccm-b-file', 'fID', t('Choose File'));?>
-
-<br/>
-<h2><?=t('Link Text')?></h2>
-<input type="text" style="width: 200px" name="fileLinkText" /><br />
+<div class="form-group">
+	<?=$form->label('fID', t('File'))?>
+	<?=$al->file('ccm-b-file', 'fID', t('Choose File'));?>
+</div>
+<div class="form-group">
+	<?=$form->label('fileLinkText', t('Link Text'))?>
+	<?=$form->text('fileLinkText')?>
+</div>
+<div class="form-group">
+	<div class="checkbox">
+		<label>
+			<?=$form->checkbox('forceDownload', '1'); ?>
+			<?=t('Force file to download')?>
+		</label>
+	</div>
+</div>

@@ -1,131 +1,64 @@
-<? defined('C5_EXECUTE') or die("Access Denied.");?>
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Bookmark Icons'), false, 'span10 offset1')?>
+<?php
 
+defined('C5_EXECUTE') or die('Access Denied.');
 
-	<form method="post" class="form-horizontal" id="favicon-form" action="<?=$this->action('update_favicon')?>" enctype="multipart/form-data" >
+/* @var Concrete\Core\Page\View\PageView $view */
 
+/* @var Concrete\Core\Form\Service\Form $form */
+/* @var Concrete\Core\Application\Service\FileManager $concrete_asset_library */
+/* @var Concrete\Core\Validation\CSRF\Token $validation_token */
+/* @var Concrete\Core\Form\Service\Widget\Color $form_color */
 
-	<?=$this->controller->token->output('update_favicon')?>
-	<input id="remove-existing-favicon" name="remove_favicon" type="hidden" value="0" />
-	<fieldset>
-		<legend><?=t('Favicon')?></legend>
+/* @var Concrete\Core\Entity\File\File|null $favicon */
+/* @var Concrete\Core\Entity\File\File|null $iosHome */
+/* @var Concrete\Core\Entity\File\File|null $modernThumb */
+/* @var string $modernThumbBG */
+/* @var string $browserToolbarColor */
+?>
+<form method="POST" class="form-horizontal" id="favicon-form" action="<?= $view->action('update_icons') ?>" >
+    <?= $validation_token->output('update_icons') ?>
+    <fieldset>
+        <legend><?= t('Favicon') ?></legend>
+            <div class="help-block"><?= t('Your image should be 16x16 pixels, and should be a gif or a png with a .ico file extension.') ?></div>
+            <div class="form-group">
+                <?= $concrete_asset_library->image('ccm-favicon-file', 'faviconFID', t('Choose File'), $favicon, ['filters' => [['field' => 'extension', 'extension' => 'ico']]]) ?>
+            </div>
+    </fieldset>
 
-	<?
-	$favIconFID=intval(Config::get('FAVICON_FID'));
-	if($favIconFID){
-		$f = File::getByID($favIconFID);
-		?>
-		<div class="control-group">
-		<label><?=t('Selected Icon')?></label>
-		<div class="controls">
-			<img src="<?=$f->getRelativePath() ?>" />
-		</div>
-		</div>
-		<div class="control-group">
-		<label></label>
-		<div class="controls">
-			<a href="javascript:void(0)" class="btn danger" onclick="removeFavIcon()"><?=t('Remove')?></a>
-		</div>
-		</div>
-		
-		<script>
-		function removeFavIcon(){
-			document.getElementById('remove-existing-favicon').value=1;
-			$('#favicon-form').get(0).submit();
-		}
-		</script>
-	<? }else{ ?>
-	
+    <fieldset>
+        <legend><?= t('iPhone Thumbnail') ?></legend>
+        <div class="help-block"><?= t('iPhone home screen icons should be 57x57 and be in the .png format.') ?></div>
+        <div class="form-group">
+            <?= $concrete_asset_library->image('ccm-iphone-file', 'iosHomeFID', t('Choose File'), $iosHome, ['filters' => [['field' => 'extension', 'extension' => 'png']]]) ?>
+        </div>
+    </fieldset>
 
-	
-		<div class="control-group">
-			<label for="favicon_upload" class="control-label"><?=t('Upload File')?></label>
-			<div class="controls">
-				<input id="favicon_upload" type="file" class="input-file" name="favicon_file"/>
-				<div class="help-block"><?=t('Your image should be 16x16 pixels, and should be a gif or a png with a .ico file extension.')?></div>
+    <fieldset>
+        <legend><?= t('Windows 8 Thumbnail') ?></legend>
+        <div class="help-block"><?= t('Windows 8 start screen tiles should be 144x144 and be in the .png format.') ?></div>
+        <div class="form-group">
+            <label class="control-label"><?= t('File') ?></label>
+            <?= $concrete_asset_library->image('ccm-modern-file', 'modernThumbFID', t('Choose File'), $modernThumb, ['filters' => [['field' => 'extension', 'extension' => 'png']]]) ?>
+        </div>
+        <div class="form-group">
+            <label class="control-label"><?= t('Background Color') ?></label>
+            <div><?= $form_color->output('modernThumbBG', $modernThumbBG) ?></div>
+        </div>
+    </fieldset>
 
-			</div>
-		</div>
+    <fieldset>
+        <legend><?= t('Browser Toolbar Color') ?></legend>
+        <div class="help-block"><?= t('This value may be used by some browsers (for example Chrome and Opera on Android) to set the toolbar color.') ?></div>
+        <div class="form-group">
+            <label class="control-label"><?= t('Color') ?></label>
+            <div><?= $form_color->output('browserToolbarColor', $browserToolbarColor) ?></div>
+        </div>
+    </fieldset>
 
-		<div class="control-group">
-			<label class="control-label"></label>
-			<div class="controls">
-				<?
-				print $interface->submit(t('Upload'), 'favicon-form', 'left');
-				?>
-			
-			</div>
-		</div>
+    <div class="ccm-dashboard-form-actions-wrapper">
+        <div class="ccm-dashboard-form-actions">
+            <button class="pull-right btn btn-primary" type="submit" ><?= t('Save') ?></button>
+        </div>
+    </div>
 
-	<? } ?>
-	</fieldset>
-
-	</form>
-	
-		
-	
-	<br/><br/>
-
-	<form method="post" id="iphone-form" class="form-horizontal" action="<?=$this->action('update_iphone_thumbnail')?>" enctype="multipart/form-data" >
-	<?=$this->controller->token->output('update_iphone_thumbnail')?>
-	<input id="remove-existing-iphone-thumbnail" name="remove_icon" type="hidden" value="0" />
-
-	<fieldset>
-		<legend><?=t('iPhone Thumbnail')?></legend>
-	
-	
-	<?
-	$favIconFID=intval(Config::get('IPHONE_HOME_SCREEN_THUMBNAIL_FID'));
-	if($favIconFID){
-		$f = File::getByID($favIconFID);
-		?>
-		<div class="control-group">
-		<label class="control-label"><?=t('Selected Icon')?></label>
-		<div class="controls">
-			<img src="<?=$f->getRelativePath() ?>" />
-		</div>
-		</div>
-		<div class="control-group">
-		<label></label>
-		<div class="controls">
-			<a href="javascript:void(0)" class="btn danger" onclick="removeIphoneThumbnail()"><?=t('Remove')?></a>
-		</div>
-		</div>
-		
-		<script>
-		function removeIphoneThumbnail(){
-			document.getElementById('remove-existing-iphone-thumbnail').value=1;
-			$('#iphone-form').get(0).submit();
-		}
-		</script>
-		
-	<? } else { ?>
-
-		<div class="control-group">
-			<label for="favicon_upload" class="control-label"><?=t('Upload File')?></label>
-			<div class="controls">
-				<input id="favicon_upload" type="file" class="input-file" name="favicon_file"/>
-				<div class="help-block"><?=t('iPhone home screen icons should be 57x57 and be in the .png format.')?></div>
-
-			</div>
-		</div>
-
-		<div class="control-group">
-			<label class="control-label"></label>
-			<div class="controls">
-				<?
-				print $interface->submit(t('Upload'), 'favicon-form', 'left');
-				?>
-			
-			</div>
-		</div>
-	<? } ?>
-		
-	</fieldset>
-	
-	</form>
-
-
-
-
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper();?>
+</form>

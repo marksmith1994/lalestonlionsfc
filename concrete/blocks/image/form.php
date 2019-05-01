@@ -1,115 +1,161 @@
-<?php  
-defined('C5_EXECUTE') or die("Access Denied.");
-$al = Loader::helper('concrete/asset_library');
-$bf = null;
-$bfo = null;
+<?php defined('C5_EXECUTE') or die('Access Denied.');
 
-if ($controller->getFileID() > 0) { 
-	$bf = $controller->getFileObject();
-}
-if ($controller->getFileOnstateID() > 0) { 
-	$bfo = $controller->getFileOnstateObject();
-
-}
-?>
-<div class="ccm-block-field-group">
-<h4><?=t('Image to Display')?></h4><br/>
-<?
-$args = array();
-if ($forceImageToMatchDimensions && $maxWidth && $maxHeight) {
-	$args['maxWidth'] = $maxWidth;
-	$args['maxHeight'] = $maxHeight;
-	$args['minWidth'] = $maxWidth;
-	$args['minHeight'] = $maxHeight;
-}
+$app = \Concrete\Core\Support\Facade\Application::getFacadeApplication();
+$ps = $app->make('helper/form/page_selector');
+$al = $app->make('helper/concrete/asset_library');
 ?>
 
-<div class="clearfix">
-	<label><?=t('Image')?></label>
-	<div class="input">	
-		<?=$al->image('ccm-b-image', 'fID', t('Choose Image'), $bf, $args);?>
-	</div>
-</div>
-<div class="clearfix">
-	<label><?=t('Image On-State')?></label>
-	<div class="input">	
-		<?=$al->image('ccm-b-image-onstate', 'fOnstateID', t('Choose Image On-State'), $bfo, $args);?>
-	</div>
-</div>
+<fieldset>
+    <legend><?php echo t('Files'); ?></legend>
 
-</div>
+    <div class="form-group">
+        <?php
+        echo $form->label('ccm-b-image', t('Image'));
+        echo $al->image('ccm-b-image', 'fID', t('Choose Image'), $bf);
+        ?>
+    </div>
 
-<div class="ccm-block-field-group">
-<h4><?=t('Link and Caption')?></h4><br/>
+    <div class="form-group">
+        <label class="control-label"><?php echo t('Image Hover')?> <small style="color: #999999; font-weight: 200;"><?php echo t('(Optional)'); ?></small></label>
+        <i class="fa fa-question-circle launch-tooltip" title="" data-original-title="<?php echo t('The image hover effect requires constraining the image size.'); ?>"></i>
+        <?php
+        echo $al->image('ccm-b-image-onstate', 'fOnstateID', t('Choose Image On-State'), $bfo);
+        ?>
+    </div>
+</fieldset>
 
-<div class="clearfix">
-	<?=$form->label('linkType', t('Image Links to:'))?>
-	<div class="input">	
-		<select name="linkType" id="linkType">
-			<option value="0" <?=(empty($externalLink) && empty($internalLinkCID) ? 'selected="selected"' : '')?>><?=t('Nothing')?></option>
-			<option value="1" <?=(empty($externalLink) && !empty($internalLinkCID) ? 'selected="selected"' : '')?>><?=t('Another Page')?></option>
-			<option value="2" <?=(!empty($externalLink) ? 'selected="selected"' : '')?>><?=t('External URL')?></option>
-		</select>
-	</div>
-</div>
+<fieldset>
+    <legend><?php echo t('HTML'); ?></legend>
 
-<div id="linkTypePage" style="display: none;" class="clearfix">
-	<?=$form->label('internalLinkCID', t('Choose Page:'))?>
-	<div class="input">
-		<?= Loader::helper('form/page_selector')->selectPage('internalLinkCID', $internalLinkCID); ?>
-	</div>
-</div>
-<div id="linkTypeExternal" style="display: none;" class="clearfix">
-	<?=$form->label('externalLink', t('URL:'))?>
-	<div class="input">
-	<?= $form->text('externalLink', $externalLink, array('style' => 'width: 250px')); ?>
-	</div>
-</div>
+    <div class="form-group">
+        <?php
+        $options = [
+            0 => t('None'),
+            1 => t('Page'),
+            2 => t('External URL'),
+            3 => t('File')
+        ];
 
+        echo $form->label('imageLinkType', t('Image Link'));
+        echo $form->select('linkType', $options, isset($linkType) ? $linkType : 0);
+        ?>
+    </div>
 
-<div class="clearfix">
-	<?=$form->label('altText', t('Alt Text/Caption'))?>
-	<div class="input">	
-		<?= $form->text('altText', $altText, array('style' => 'width: 250px')); ?>
-	</div>
-</div>
+    <div id="imageLinkTypePage" style="display: none;" class="form-group">
+        <?php
+        echo $form->label('internalLinkCID', t('Page'));
+        echo $ps->selectPage('internalLinkCID', isset($internalLinkCID) ? $internalLinkCID : null);
+        ?>
+    </div>
 
-</div>
+    <div id="imageLinkTypeExternal" style="display: none;" class="form-group">
+        <?php
+        echo $form->label('externalLink', t('External URL'));
+        echo $form->text('externalLink', isset($externalLink) ? $externalLink : '');
+        ?>
+    </div>
 
-<div>
-<h4><?=t('Constrain Image Dimensions')?></h4><br/>
-<? if ($maxWidth == 0) { 
-	$maxWidth = '';
-} 
-if ($maxHeight == 0) {
-	$maxHeight = '';
-}
-?>
+    <div id="imageLinkTypeFile" style="display: none;" class="form-group">
+        <?php
+        echo $form->label('fileLinkID', t('File'));
+        echo $al->file('ccm-b-file', 'fileLinkID', t('Choose File'), $linkFile);
+        ?>
+    </div>
 
-<div class="clearfix">
-	<?=$form->label('maxWidth', t('Max Width'))?>
-	<div class="input">	
-		<?= $form->text('maxWidth', $maxWidth, array('style' => 'width: 60px')); ?>
-	</div>
-</div>
+    <div id="imageLinkOpenInNewWindow" style="display: none;" class="form-group">
+        <div class="checkbox">
+            <label>
+            <?php
+            echo $form->checkbox('openLinkInNewWindow', 'openLinkInNewWindow', isset($openLinkInNewWindow) ? $openLinkInNewWindow : false);
+            echo t('Open link in new window');
+            ?>
+            </label>
+        </div>
+    </div>
 
-<div class="clearfix">
-	<?=$form->label('maxHeight', t('Max Height'))?>
-	<div class="input">	
-		<?= $form->text('maxHeight', $maxHeight, array('style' => 'width: 60px')); ?>
-	</div>
-</div>
+    <div class="form-group">
+        <?php
+        echo $form->label('altText', t('Alt Text'));
+        echo $form->text('altText', isset($altText) ? $altText : '', ['maxlength' => 255]);
+        ?>
+    </div>
 
+    <div class="form-group">
+        <?php
+        echo $form->label('title', t('Title'));
+        echo $form->text('title', isset($title) ? $title : '', ['maxlength' => 255]);
+        ?>
+    </div>
+</fieldset>
 
-<div class="clearfix">
-	<?=$form->label('forceImageToMatchDimensions', t('Scale Image'))?>
-	<div class="input">	
-		<select name="forceImageToMatchDimensions" id="forceImageToMatchDimensions">
-			<option value="0" <? if (!$forceImageToMatchDimensions) { ?> selected="selected" <? } ?>><?=t('Automatically')?></option>
-			<option value="1" <? if ($forceImageToMatchDimensions == 1) { ?> selected="selected" <? } ?>><?=t('Force Exact Image Match')?></option>
-		</select>
-	</div>
-</div>
+<fieldset>
+    <legend><?php echo t('Resize Image'); ?></legend>
 
+    <div class="form-group">
+        <div class="checkbox" data-checkbox-wrapper="constrain-image">
+            <label>
+                <?php
+                echo $form->checkbox('constrainImage', 1, $constrainImage);
+                echo t('Constrain Image Size');
+                ?>
+            </label>
+        </div>
+    </div>
 
-</div>
+    <div data-fields="constrain-image" style="display: none">
+        <div class="well">
+            <div class="form-group">
+                <div class="checkbox">
+                <label>
+                    <?php
+                    echo $form->checkbox('cropImage', 1, isset($cropImage) ? $cropImage : false);
+                    echo t('Crop Image');
+                    ?>
+                </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <?php echo $form->label('maxWidth', t('Max Width')); ?>
+                <div class="input-group">
+                    <?php echo $form->number('maxWidth', isset($maxWidth) ? $maxWidth : '', ['min' => 0]); ?>
+                    <span class="input-group-addon"><?php echo t('px'); ?></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <?php echo $form->label('maxHeight', t('Max Height')); ?>
+                <div class="input-group">
+                    <?php echo $form->number('maxHeight', isset($maxHeight) ? $maxHeight : '', ['min' => 0]); ?>
+                    <span class="input-group-addon"><?php echo t('px'); ?></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+
+<script>
+refreshImageLinkTypeControls = function() {
+    var linkType = $('#linkType').val();
+    $('#imageLinkTypePage').toggle(linkType == 1);
+    $('#imageLinkTypeExternal').toggle(linkType == 2);
+    $('#imageLinkTypeFile').toggle(linkType == 3);
+    $('#imageLinkOpenInNewWindow').toggle(linkType > 0);
+};
+
+$(document).ready(function() {
+    $('#linkType').change(refreshImageLinkTypeControls);
+
+    $('#constrainImage').on('change', function() {
+        $('div[data-fields=constrain-image]').toggle($(this).is(':checked'));
+
+        if (!$(this).is(':checked')) {
+            $('#cropImage').prop('checked', false);
+            $('#maxWidth').val('');
+            $('#maxHeight').val('');
+        }
+    }).trigger('change');
+
+    refreshImageLinkTypeControls();
+});
+</script>

@@ -1,0 +1,128 @@
+.header-border{
+    text-align: center;
+    padding: 15px;
+    position: relative;
+
+    @media #{$small} {
+        padding: 25px 0;
+    }
+
+    @media #{$medium} {
+        padding: 100px 0;
+
+        span{
+            width: 100%;
+            height: 10px;
+            background-color: black;
+            position: absolute;
+            left: 0;
+            z-index: 1;
+            top: 50%;
+            transform: translatey(-50%);
+        }
+    }
+
+
+    h2{
+        color: black;
+        background-color: white;
+        @media #{$medium} {
+            margin: auto;
+            z-index: 2;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 25px 50px;
+        }
+    }
+
+    &.black{
+        span{
+            background-color: white;
+        }
+
+        h2{
+            color: white;
+            background-color: black;
+        }
+    }
+}
+
+.news-container{
+    min-height: 300px;
+
+    @media #{$medium} {
+        min-height: 600px;
+
+    }
+}
+
+.news-block{
+    padding: 0 0 25px 0;
+    display: flex;
+    flex-direction: column;
+    
+    @media #{$medium} {
+        flex-direction: row;
+        padding: 0 0 100px 0;
+
+        &.reverse{
+            flex-direction: row-reverse;
+        }
+    }
+
+    .news-block__image{
+        width: 100%;
+
+        @media #{$medium} {
+            width: 50%;
+        }
+
+        img{
+            width: 100%;
+        }
+    }
+
+    .news-block__content{
+        position: relative;
+        width: 100%;
+
+        @media #{$medium} {
+            width: 50%;
+        }
+
+        .news-block__content--inner{
+            width: 100%;
+            padding: 15px;
+
+            @media #{$medium} {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 80%;
+                padding: 0px;
+            }
+
+            h2,
+            h4{
+                margin: 0;
+            }
+        
+            h4{
+                color: $orange;
+                font-style: italic;
+            }
+        }
+    }
+}
+
+.loader-wrap{
+    text-align: center;
+}
+
+.load-more{
+    text-align: center;
+    margin: 25px;
+}

@@ -1,137 +1,282 @@
-<? defined('C5_EXECUTE') or die("Access Denied."); ?>
+<?php
 
-<div class="ccm-ui">
-<div class="row">
-<div class="span10 offset1 columns">
-<div class="ccm-pane">
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeader(t('Block Types'), t('Add custom block types, refresh the database tables of installed blocks, and uninstall blocks types from here.'));?>
-<? if ($this->controller->getTask() == 'inspect' || $this->controller->getTask() == 'refresh') { ?>
+/* @var Concrete\Core\Page\View\PageView $view */
+/* @var Concrete\Controller\SinglePage\Dashboard\Blocks\Types $controller */
+/* @var Concrete\Core\Form\Service\Form $form */
+/* @var Concrete\Core\Html\Service\Html $html */
+/* @var Concrete\Core\Validation\CSRF\Token $token */
 
-<div class="ccm-pane-body">
-	
-	<h3><img src="<?=$ci->getBlockTypeIconURL($bt)?>" /> <?=$bt->getBlockTypeName()?></h3>
-		
-	<h5><?=t('Description')?></h5>
-	<p><?=$bt->getBlockTypeDescription()?></p>
+/* @var Concrete\Core\Application\Service\Urls $ci */
+/* @var Concrete\Core\Url\Resolver\Manager\ResolverManagerInterface $urlResolver */
 
-	<h5><?=t('Usage Count')?></h5>
-	<p><?=$num?></p>
-		
-	<? if ($bt->isBlockTypeInternal()) { ?>
-	<h5><?=t('Internal')?></h5>
-	<p><?=t('This is an internal block type.')?></p>
-	<? } ?>
+defined('C5_EXECUTE') or die('Access Denied.');
 
-</div>
-<div class="ccm-pane-footer">
-	<a href="<?=$this->url('/dashboard/blocks/types')?>" class="btn"><?=t('Back to Block Types')?></a>
-
-	<? print $ch->button(t("Refresh"), $this->url('/dashboard/blocks/types','refresh', $bt->getBlockTypeID()), "right"); ?>
-	<?
-	$u = new User();
-	if ($u->isSuperUser()) {
-	
-		$removeBTConfirm = t('This will remove all instances of the %s block type. This cannot be undone. Are you sure?', $bt->getBlockTypeHandle());
-		
-		print $ch->button_js(t('Remove'), 'removeBlockType()', 'right', 'error');?>
-
-		<script type="text/javascript">
-		removeBlockType = function() {
-			if (confirm('<?=$removeBTConfirm?>')) { 
-				location.href = "<?=$this->url('/dashboard/blocks/types', 'uninstall', $bt->getBlockTypeID(), $valt->generate('uninstall'))?>";				
-			}
-		}
-		</script>
-
-	<? } else { ?>
-		<? print $ch->button_js(t('Remove'), 'alert(\'' . t('Only the super user may remove block types.') . '\')', 'right', 'disabled error');?>
-	<? } ?>
-		
-</div>
-
-<? } else { ?>
-
-<div class="ccm-pane-body ccm-pane-body-footer">
-
-	<h5><?=t('Awaiting Installation')?></h5>
-	<? if (count($availableBlockTypes) > 0) { ?>
-		<ul id="ccm-block-type-list">
-		<?	foreach ($availableBlockTypes as $bt) { 
-			$btIcon = $ci->getBlockTypeIconURL($bt);
-			?>
-			<li class="ccm-block-type ccm-block-type-available">
-				<p style="background-image: url(<?=$btIcon?>)" class="ccm-block-type-inner"><?=$ch->button(t("Install"), $this->url('/dashboard/blocks/types','install', $bt->getBlockTypeHandle()), "right", 'small');?> <?=$bt->getBlockTypeName()?></p>
-			</li>
-		<? } ?>
-		</ul>
-	<? } else { ?>
-		<p><?=t('No custom block types are awaiting installation.')?></p>
-	<? } ?>
-	
-    <? if (ENABLE_MARKETPLACE_SUPPORT == true) { ?>
-	<div class="well" style="padding:10px 20px;">
-        <h3><?=t('More Blocks')?></h3>
-        <p><?=t('Browse our marketplace of add-ons to extend your site!')?></p>
-        <p><a class="btn success" href="<?=$this->url('/dashboard/extend/add-ons')?>"><?=t("More Add-ons")?></a></p>
+if ($controller->getAction() == 'inspect') {
+    /* @var Concrete\Core\Entity\Block\BlockType\BlockType $bt */
+    /* @var int $num */
+    /* @var int $numActive */
+    ?>
+    <h3><img src="<?= $ci->getBlockTypeIconURL($bt) ?>" /> <?= t($bt->getBlockTypeName()) ?></h3>
+    <dl>
+        <dt><?= t('Description') ?></dt>
+        <dd><?= t($bt->getBlockTypeDescription()) ?></dd>
+        <dt><?= t('Usage Count') ?></dt>
+        <dd><?= $num ?></dd>
+        <dt><?= t('Usage Count on Active Pages') ?></dt>
+        <dd>
+            <?php
+            if ($numActive > 0) {
+                ?><a href="<?= $view->action('search', $bt->getBlockTypeID()) ?>"><?= $numActive ?></a><?php
+            } else {
+                echo $num;
+            }
+            ?>
+        </dd>
+        <?php
+        if ($bt->isBlockTypeInternal()) {
+            ?>
+            <dt><?= t('Internal') ?></dt>
+            <dd><?= t('This is an internal block type.') ?></dd>
+            <?php
+        }
+    ?>
+    </dl>
+    <div class="ccm-dashboard-form-actions-wrapper">
+        <div class="ccm-dashboard-form-actions">
+            <a href="<?= $urlResolver->resolve(['/dashboard/blocks/types']) ?>" class="btn btn-default pull-left"><?= t('Back to Block Types') ?></a>
+            <div class="pull-right">
+                <a href="<?= $urlResolver->resolve(['/dashboard/blocks/types', 'refresh', $bt->getBlockTypeID(), $token->generate('ccm-refresh-blocktype')]) ?>" class="btn btn-default"><?= t('Refresh') ?></a>
+                <?php
+                $u = new User();
+                if ($u->isSuperUser()) {
+                    ?>
+                    <a href="javascript:void(0)" class="btn btn-danger" onclick="removeBlockType()"><?= t('Remove') ?></a>
+                    <script>
+                    function removeBlockType() {
+                        <?php
+                        if ($bt->canUnInstall()) {
+                            ?>
+                            if (confirm(<?= json_encode(t('This will remove all instances of the %s block type. This cannot be undone. Are you sure?', $bt->getBlockTypeHandle())) ?>)) {
+                                location.href = <?= json_encode((string) $urlResolver->resolve(['/dashboard/blocks/types', 'uninstall', $bt->getBlockTypeID(), $token->generate('ccm-uninstall-blocktype')])) ?>;
+                            }
+                            <?php
+                        } else {
+                            ?>
+                            alert(<?= json_encode(t('This block type is internal. It cannot be uninstalled.')) ?>);
+                            <?php
+                        }
+                        ?>
+                    }
+                    </script>
+                    <?php
+                }
+                ?>
+            </div>
+        </div>
     </div>
-    <? } ?>
-    
-	<h3><?=t('Installed Block Types')?></h3>
-	<div id="ccm-block-type-list-installed" class="ccm-block-type-sortable-list">
-		<? foreach($normalBlockTypes as $bt) { 
-			$btIcon = $ci->getBlockTypeIconURL($bt);
-			$btID = $bt->getBlockTypeID();
-			?>
-			<div class="ccm-group" id="btID_<?=$btID?>" data-btid="<?=$btID?>">
-				<img class="ccm-group-sort" src="<?php echo ASSETS_URL_IMAGES?>/icons/up_down.png" width="14" height="14" />
-				<a class="ccm-group-inner" href="<?=$this->action('inspect', $bt->getBlockTypeID())?>" style="background-image: url(<?=$btIcon?>)"><?=$bt->getBlockTypeName()?></a>
-			</div>
-		<? } ?>
-	</div>
-	<script type="text/javascript">
-	$(document).ready(function() {
-		$("#ccm-block-type-list-installed").sortable({
-			handle: 'img.ccm-group-sort',
-			cursor: 'move',
-			opacity: 0.5,
-			stop: function(event, ui) {
-				var btID = ui.item.attr('data-btid');
-				var btDisplayOrder = ui.item.index() + 1;
-				var data = 'btID=' + btID + '&btDisplayOrder=' + btDisplayOrder;
-				$.post('<?=(REL_DIR_FILES_TOOLS_REQUIRED . "/dashboard/block_type_order_update")?>', data);
-			}
-		});
-	});
-	</script>
-	<div style="padding: 10px 0 20px 0;">
-		<form action="<?=$this->action('reset_display_order')?>" method="post">
-			<?
-			$prompt = t('Are you sure you wish to reset the display order of installed block types?');
-			$onclick = "if (confirm('" . $prompt . "')) { $(this).closest('form').submit(); }";
-			echo Loader::helper('concrete/interface')->button_js(t('Reset Order'), $onclick, 'right', 'small');
-			echo Loader::helper('form')->hidden('isSubmitted', '1');
-			?>
-		</form>
-	</div>
-	
-	<h5><?=t('Internal Block Types')?></h5>
-	<ul id="ccm-block-type-list">
-		<? foreach($internalBlockTypes as $bt) { 
-			$btIcon = $ci->getBlockTypeIconURL($bt);
-			?>	
-			<li class="ccm-block-type ccm-block-type-available">
-				<a style="background-image: url(<?=$btIcon?>)" class="ccm-block-type-inner" href="<?=$this->action('inspect', $bt->getBlockTypeID())?>"><?=$bt->getBlockTypeName()?></a>
-				<div class="ccm-block-type-description"  id="ccm-bt-help<?=$bt->getBlockTypeID()?>"><?=$bt->getBlockTypeDescription()?></div>
-			</li>
-		<? } ?>
-	</ul>
-	
-	
+    <?php
+} else {
+    /* @var Concrete\Core\Entity\Block\BlockType\BlockType[] $availableBlockTypes */
+    /* @var Concrete\Core\Entity\Block\BlockType\BlockType[] $internalBlockTypes */
+    /* @var array $normalBlockTypesAndSets */
+    /* @var bool $marketplaceEnabled */
+    /* @var bool $enableMoveBlocktypesAcrossSets */
+    ?>
+    <h3><?= t('Awaiting Installation') ?></h3>
+    <?php
+    if (!empty($availableBlockTypes)) {
+        ?>
+        <ul class="item-select-list">
+            <?php
+            foreach ($availableBlockTypes as $bt) {
+                $btIcon = $ci->getBlockTypeIconURL($bt);
+                ?>
+                <li><span class="clearfix"><img src="<?= $btIcon ?>" /> <?= t($bt->getBlockTypeName()) ?>
+                    <a href="<?= $urlResolver->resolve(['/dashboard/blocks/types', 'install', $bt->getBlockTypeHandle()]) ?>" class="btn pull-right btn-sm btn-default"><?= t('Install') ?></a>
+                </span></li>
+                <?php
+            }
+            ?>
+        </ul>
+        <?php
+    } else {
+        ?>
+        <p><?= t('No custom block types are awaiting installation.') ?></p>
+        <?php
+    }
+    if ($marketplaceEnabled) {
+        ?>
+        <div class="alert alert-info">
+            <a class="btn btn-success btn-xs pull-right" href="<?= $urlResolver->resolve(['/dashboard/extend/addons']) ?>"><?= t('More Add-ons') ?></a>
+            <p><?= t('Browse our marketplace of add-ons to extend your site!') ?></p>
+        </div>
+        <?php
+    }
+    ?>
+    <hr/>
+    <h3><?= t('Installed Block Types') ?></h3>
+    <ul class="item-select-list" id="ccm-btlist-btsets">
+        <?php
+        foreach ($normalBlockTypesAndSets as $normalBlockTypesAndSet) {
+            $blockTypeSet = $normalBlockTypesAndSet['blockTypeSet'];
+            /* @var Concrete\Core\Block\BlockType\Set|null $blockTypeSet */
+            $normalBlockTypes = $normalBlockTypesAndSet['blockTypes'];
+            /* @var Concrete\Core\Entity\Block\BlockType\BlockType[] $normalBlockTypes */
 
-</div>
-	
-<? } ?>
-</div>
-</div>
-</div>
-</div>
+            ?>
+            <li class="ccm-btlist-btset" data-btset-id="<?= $blockTypeSet === null ? '0' : $blockTypeSet->getBlockTypeSetID() ?>">
+                <h4 class="ccm-btlist-btset-name">
+                    <?php
+                    if ($blockTypeSet !== null) {
+                        ?><i class="fa fa-bars" aria-hidden="true"></i><?php
+                    }
+                    ?>
+                    <?= $blockTypeSet === null ? t('Other') : $blockTypeSet->getBlockTypeSetDisplayName() ?>
+                </h4>
+                <ul class="item-select-list ccm-btlist-bts">
+                    <?php
+                    foreach ($normalBlockTypes as $bt) {
+                        ?>
+                        <li class="ccm-btlist-bt" data-bt-id="<?= $bt->getBlockTypeID() ?>" title="<?= h($bt->getBlockTypeDescription()) ?>">
+                            <a href="<?= $view->action('inspect', $bt->getBlockTypeID()) ?>">
+                                <i class="fa fa-bars" aria-hidden="true"></i>
+                                <img src="<?= $ci->getBlockTypeIconURL($bt) ?>" />
+                                <?= t($bt->getBlockTypeName()) ?>
+                            </a>
+                        </li>
+                        <?php
+                    }
+                    ?>
+                </ul>
+            </li>
+            <?php
+        }
+        ?>
+    </ul>
+    <h3><?= t('Internal Block Types') ?></h3>
+    <ul class="item-select-list">
+        <?php
+        foreach ($internalBlockTypes as $bt) {
+            $btIcon = $ci->getBlockTypeIconURL($bt);
+            ?>
+            <li>
+                <a href="<?= $view->action('inspect', $bt->getBlockTypeID()) ?>"><img src="<?= $btIcon ?>" /> <?= t($bt->getBlockTypeName()) ?></a>
+            </li>
+            <?php
+        }
+        ?>
+    </ul>
+    <script>
+    $(document).ready(function() {
+        var $btSetList = $('#ccm-btlist-btsets'),
+            $btLists = $('#ccm-btlist-btsets .ccm-btlist-bts'),
+            $allSortables = $().add($btSetList).add($btLists),
+            tokenName = <?= json_encode($token::DEFAULT_TOKEN_NAME) ?>,
+            actions = <?= json_encode([
+                'sortSets' => [
+                    'url' => (string) $view->action('sort_blocktypesets'),
+                    'token' => $token->generate('ccm-sort_blocktypesets'),
+                ],
+                'sortBlockTypes' => [
+                    'url' => (string) $view->action('sort_blocktypes'),
+                    'token' => $token->generate('ccm-sort_blocktypes'),
+                ],
+            ]) ?>;
+
+        function ajax(which, data, onSuccess, onError)
+        {
+            data[tokenName] = actions[which].token;
+            $.ajax({
+                data: data,
+                dataType: 'json',
+                method: 'POST',
+                url: actions[which].url
+            }).done(function() {
+                onSuccess();
+            }).fail(function(xhr, status, error) {
+                var msg = error;
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    msg = xhr.responseJSON.error.message || xhr.responseJSON.error;
+                }
+                window.alert(msg);
+                onError();
+            });
+        }
+
+        $btSetList.sortable({
+            items: '.ccm-btlist-btset',
+            handle: '.ccm-btlist-btset-name .fa-bars',
+            cursor: 'move',
+            axis: 'y',
+            containment: $btSetList,
+            stop: function(event, ui) {
+                $allSortables.sortable('disable');
+                $(ui.item).css({left: '', top: '', position: ''});
+                var btSetIDs = [];
+                $btSetList.find('.ccm-btlist-btset').each(function() {
+                    btSetIDs.push($(this).data('btset-id'));
+                });
+                ajax(
+                    'sortSets',
+                    {btSetIDs: btSetIDs},
+                    function() {
+                        $allSortables.sortable('enable');
+                    },
+                    function() {
+                        $allSortables.sortable('cancel');
+                        $allSortables.sortable('enable');
+                    }
+                );
+            }
+        });
+        $btLists.sortable({
+            items: '.ccm-btlist-bt',
+            handle: 'a .fa-bars',
+            cursor: 'move',
+            axis: 'y',
+            <?php
+            if ($enableMoveBlocktypesAcrossSets) {
+                ?>
+                containment: $btSetList,
+                connectWith: $btLists,
+                <?php
+            } else {
+                ?>
+                containment: 'parent',
+                <?php
+            }
+            ?>
+            start: function() {
+                var $me = $(this),
+                    $btSet = $me.closest('.ccm-btlist-btset'),
+                    btSetID = $btSet.data('btset-id');
+                $me.data('original-btset-id', btSetID);
+            },
+            stop: function(event, ui) {
+                $allSortables.sortable('disable');
+                $(ui.item).css({left: '', top: '', position: ''});
+                var oldBtSetID = $(this).data('original-btset-id'),
+                    movingID = $(ui.item).data('bt-id'),
+                    $btSet = $(ui.item).closest('.ccm-btlist-btset'),
+                    newBtSetID = $btSet.data('btset-id'),
+                    btIDs = [];
+                $btSet.find('.ccm-btlist-bt').each(function() {
+                    btIDs.push($(this).data('bt-id'));
+                });
+                ajax(
+                    'sortBlockTypes',
+                    {movingID: movingID, oldBtSetID: oldBtSetID, newBtSetID: newBtSetID , btIDs: btIDs},
+                    function() {
+                        $allSortables.sortable('enable');
+                    },
+                    function() {
+                        $allSortables.sortable('cancel');
+                        $allSortables.sortable('enable');
+                    }
+                );
+            }
+        });
+    });
+    </script>
+    <?php
+}

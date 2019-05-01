@@ -1,39 +1,51 @@
 <?php
 defined('C5_EXECUTE') or die("Access Denied.");
-$ih = Loader::helper('image');
+
+if (!$previousLinkURL && !$nextLinkURL && !$parentLabel) {
+    return false;
+}
 ?>
 
-<div id="ccm-next-previous-<?php echo intval($bID)?>" class="ccm-next-previous-wrapper">
+<div class="ccm-block-next-previous-wrapper">
+    <?php
+    if ($previousLinkURL && $previousLabel) {
+        ?>
+        <div class="ccm-block-next-previous-header">
+            <h5><?php echo $previousLabel ?></h5>
+        </div>
+        <?php
+    }
 
-    <?php  if( strlen($previousLinkText) > 0){ ?>
-      <div class="ccm-next-previous-previouslink">
-        <?php  if( is_object($previousCollection) ){ ?>
-          <a href="<?php echo Loader::helper('navigation')->getLinkToCollection($previousCollection)?>"><?php echo $previousLinkText ?></a>
-        <?php  } else { ?>
-          &nbsp;
-        <?php  } ?>
-      </div>
-    <?php } ?>
+    if ($previousLinkText) {
+        ?>
+        <p class="ccm-block-next-previous-previous-link">
+            <?php echo $previousLinkURL ? '<a href="' . $previousLinkURL . '">' . $previousLinkText . '</a>' : '' ?>
+        </p>
+        <?php
+    }
 
-    <?php  if( strlen($parentLinkText) > 0){ ?>
-      <div class="ccm-next-previous-parentlink">
-        <?php  if( is_object($parentCollection) && $parentLinkText){ ?>
-          <a href="<?php echo Loader::helper('navigation')->getLinkToCollection($parentCollection)?>"><?php echo $parentLinkText ?></a>
-        <?php  } else { ?>
-          &nbsp;
-        <?php  } ?>
-      </div>
-    <?php } ?>
+    if ($nextLinkURL && $nextLabel) {
+        ?>
+        <div class="ccm-block-next-previous-header">
+            <h5><?php echo $nextLabel ?></h5>
+        </div>
+        <?php
+    }
 
-    <?php  if( strlen($nextLinkText) > 0){ ?>
-      <div class="ccm-next-previous-nextlink">
-        <?php  if( is_object($nextCollection) ){ ?>
-          <a href="<?php echo Loader::helper('navigation')->getLinkToCollection($nextCollection)?>"><?php echo $nextLinkText ?></a>
-        <?php  } else { ?>
-          &nbsp;
-        <?php  } ?>
-      </div>
-    <?php } ?>
+    if ($nextLinkText) {
+        ?>
+        <p class="ccm-block-next-previous-next-link">
+            <?php echo $nextLinkURL ? '<a href="' . $nextLinkURL . '">' . $nextLinkText . '</a>' : '' ?>
+        </p>
+        <?php
+    }
 
-    <div class="spacer"></div>
+    if ($parentLabel) {
+        ?>
+        <p class="ccm-block-next-previous-parent-link">
+            <?php echo $parentLinkURL ? '<a href="' . $parentLinkURL . '">' . $parentLabel . '</a>' : '' ?>
+        </p>
+        <?php
+    }
+    ?>
 </div>

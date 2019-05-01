@@ -1,22 +1,22 @@
 <?php
-defined('C5_EXECUTE') or die(_("Access Denied."));
+defined('C5_EXECUTE') or die("Access Denied.");
 
-$subject = SITE.' '.t('Registration Approved');
+$subject = $siteName.' '.t('Registration Approved');
 
-/**
+/*
  * HTML BODY START
  */
 ob_start();
 
 ?>
-<h2><?= t('Welcome to') ?> <?= SITE ?></h2>
+<h2><?= t('Welcome to') ?> <?= $siteName ?></h2>
 <?= t("Your registration has been approved. You can log into your new account here") ?>:<br />
 <br />
-<a href="<?= BASE_URL.View::url('/login') ?>"><?= BASE_URL.View::url('/login') ?></a>
-<?
+<a href="<?= View::url('/login') ?>"><?= View::url('/login') ?></a>
+<?php
 
 $bodyHTML = ob_get_clean();
-/**
+/*
  * HTML BODY END
  *
  * =====================
@@ -26,14 +26,14 @@ $bodyHTML = ob_get_clean();
 ob_start();
 
 ?>
-<?= t('Welcome to') ?> <?= SITE ?>
+<?= t('Welcome to') ?> <?= $siteName ?>
 
-<?= t("Your registation has been approved. You can log into your new account here") ?>:
+<?= t("Your registration has been approved. You can log into your new account here") ?>:
 
-<?= BASE_URL.View::url('/login') ?>
-<?
+<?= View::url('/login') ?>
+<?php
 
 $body = ob_get_clean();
-/**
+/*
  * PLAIN TEXT BODY END
  */

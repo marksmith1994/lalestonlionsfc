@@ -1,0 +1,49 @@
+.contact-body{
+    background-color: black;
+
+    .header-border{
+        padding: 25px 0;
+
+        @media #{$medium} {
+            padding: 100px 0;
+        }
+
+        h2{
+            color: white;
+            text-align: center;
+            margin: 0;
+        }
+    }
+}
+
+.contact-form{
+    
+    h3{
+        color: white;
+        letter-spacing: 2px;
+        text-align: center;
+        @include headerfont();
+        word-wrap: break-word;
+
+        a{
+            @include headerfont();
+            color: white;
+            word-wrap: break-word;
+
+        }
+    }
+
+    .football-vector{
+        width: 100%;
+        text-align: center;
+        padding: 50px 0;
+
+        @media #{$small} {
+            padding: 100px 0;
+        }
+
+        @media #{$medium} {
+            padding: 200px 0;
+        }
+    }
+}

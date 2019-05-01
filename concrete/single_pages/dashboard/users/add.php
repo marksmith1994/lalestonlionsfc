@@ -1,158 +1,91 @@
-<?
-defined('C5_EXECUTE') or die("Access Denied.");
-
-$th = Loader::helper('text');
-
-Loader::model('attribute/categories/user');
-$attribs = UserAttributeKey::getRegistrationList();
-$assignment = PermissionKey::getByHandle('edit_user_properties')->getMyAssignment();
-
-Loader::model("search/group");
-$gl = new GroupSearch();
-$gl->setItemsPerPage(10000);
-$gArray = $gl->getPage();
-
-$languages = Localization::getAvailableInterfaceLanguages();
-
+<?php defined('C5_EXECUTE') or die("Access Denied.");
+$ih = Loader::helper('concrete/ui');
 ?>
 
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Add User'), false, false, false);?>
+<form method="post" action="<?php echo $view->action('submit'); ?>">
+    <?= $form->getAutocompletionDisabler() ?>
+	<fieldset>
+		<legend><?php echo t('Basic Details'); ?></legend>
+		<div class="form-group">
+			<label for="uName" class="control-label"><?php echo t('Username'); ?></label>
+			<div class="input-group">
+				<?php echo $form->text('uName', array('autofocus' => 'autofocus', 'autocomplete' => 'off')); ?>
+				<span class="input-group-addon"><i class="fa fa-asterisk"></i></span>
+			</div>
+		</div>
 
-<form method="post" enctype="multipart/form-data" id="ccm-user-form" action="<?=$this->url('/dashboard/users/add')?>">
-	<?=$valt->output('create_account')?>
-	
-	<input type="hidden" name="_disableLogin" value="1">
+		<div class="form-group">
+			<label for="uPassword" class="control-label"><?php echo t('Password'); ?></label>
+			<div class="input-group">
+				<?php echo $form->password('uPassword', array('autocomplete' => 'off')); ?>
+				<span class="input-group-addon"><i class="fa fa-asterisk"></i></span>
+			</div>
+		</div>
 
-	<div class="ccm-pane-body">
-	
-    	<table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th colspan="2"><?=t('User Information')?></th>
-                </tr>
-            </thead>
-            <tbody>
-            	<tr>
-                    <td><?=t('Username')?> <span class="required">*</span></td>
-                    <td><?=t('Password')?> <span class="required">*</span></td>
-                </tr>
-                <tr>
-					<td><input type="text" name="uName" autocomplete="off" value="<?=$th->entities($_POST['uName'])?>" style="width: 95%"></td>
-					<td><input type="password" autocomplete="off" name="uPassword" value="" style="width: 95%"></td>
-				</tr>
-                <tr>
-                    <td><?=t('Email Address')?> <span class="required">*</span></td>
-                    <td><? if ($assignment->allowEditAvatar()) { ?><?=t('User Avatar')?><? } ?></td>
-                </tr>
-                <tr>
-					<td><input type="text" name="uEmail" autocomplete="off" value="<?=$th->entities($_POST['uEmail'])?>" style="width: 95%"></td>
-					<td><? if ($assignment->allowEditAvatar()) { ?><input type="file" name="uAvatar" style="width: 95%"/><? } ?></td>
-				</tr>
-                
-                
-				<? if (count($languages) > 0) { ?>
-			
-				<tr>
-					<td colspan="2"><?=t('Language')?></td>
-				</tr>	
-				<tr>
-					<td colspan="2">
-					<?
-						array_unshift($languages, 'en_US');
-						$locales = array();
-						$locales[''] = t('** Default');
-						Loader::library('3rdparty/Zend/Locale');
-						Loader::library('3rdparty/Zend/Locale/Data');
-						Zend_Locale_Data::setCache(Cache::getLibrary());
-						foreach($languages as $lang) {
-							$loc = new Zend_Locale($lang);
-							$locales[$lang] = Zend_Locale::getTranslation($loc->getLanguage(), 'language', ACTIVE_LOCALE);
-						}
-						print $form->select('uDefaultLanguage', $locales);
-					?>
-					</td>
-				</tr>
-                
-				<? } ?>
-                
-			</tbody>
-		</table>
+		<div class="form-group">
+			<label for="uEmail" class="control-label"><?php echo t('Email Address'); ?></label>
+			<div class="input-group">
+				<?php echo $form->email('uEmail'); ?>
+				<span class="input-group-addon"><i class="fa fa-asterisk"></i></span>
+			</div>
+		</div>
 
-	<? if (count($attribs) > 0) { ?>
-	
-        <table class="table table-striped">
-        	<thead>
-	        	<tr>
-            		<th><?=t('Registration Data')?></th>
-	        	</tr>
-			</thead>
-            <tbody class="inputs-list">
-            
-			<? foreach($attribs as $ak) { 
-				if (in_array($ak->getAttributeKeyID(), $assignment->getAttributesAllowedArray())) { 
-				?>
-                <tr>
-                    <td class="clearfix">
-                    	<label><?=$ak->getAttributeKeyName()?> <? if ($ak->isAttributeKeyRequiredOnRegister()) { ?><span class="required">*</span><? } ?></label>
-                        <? $ak->render('form', $caValue, false)?>
-                    </td>
-                </tr>
-                <? } ?>
-            <? } // END Foreach ?>
-        
-			</tbody>
-        </table>
-	
-	<? } ?>
+		<?php if (count($locales)) { // "> 1" because en_US is always available ?>
+		<div class="form-group">
+			<label for="uEmail" class="control-label"><?php echo t('Language'); ?></label>
+			<div>
+				<?php echo $form->select('uDefaultLanguage', $locales, Localization::activeLocale()); ?>
+			</div>
+		</div>
+		<?php } ?>
+	</fieldset>
 
-		<table class="inputs-list table-striped table">
-        	<thead>
-				<tr>
-					<th><?=t('Groups')?></th>
-				</tr>
-        	</thead>
-            <tbody>
-				<tr>
-					<td>
-                    
-					<? 
-					$gak = PermissionKey::getByHandle('assign_user_groups');
-					foreach ($gArray as $g) { 
-						if ($gak->validate($g['gID'])) {
+<?php if (count($attribs) > 0) { ?>
+	<fieldset>
+		<legend><?php echo t('Registration Data'); ?></legend>
 
+	<?php foreach ($attribs as $ak) {
+		if (in_array($ak->getAttributeKeyID(), $assignment->getAttributesAllowedArray())) { ?>
+		<div class="form-group">
+        	<label class="control-label"><?php echo $ak->getAttributeKeyDisplayName(); ?></label>
+        	<div>
+                <?php $ak->render(new \Concrete\Core\Attribute\Context\DashboardFormContext(), null, false); ?>
+            </div>
+        </div>
+        <?php } ?>
+    <?php } ?>
 
-						?>
-						<label>
-							<input type="checkbox" name="gID[]" value="<?=$g['gID']?>" <? 
-                            if (is_array($_POST['gID'])) {
-                                if (in_array($g['gID'], $_POST['gID'])) {
-                                    echo(' checked ');
-                                }
-                            }
-                        ?> />
-							<span><?=$g['gName']?></span>
-						</label>
-                    <? }
-                    
-                    
-                } ?>
-			
-					<div id="ccm-additional-groups"></div>
-			
-					</td>
-				</tr>
-			</tbody>
-		</table>
+	</fieldset>
+<?php } ?>
 
+	<fieldset>
+		<legend><?php echo t('Groups'); ?></legend>
+		<div class="form-group">
+			<label class="control-label"><?php echo t('Place this user into groups'); ?></label>
+
+		<?php foreach ($gArray as $g) {
+			$gp = new Permissions($g);
+			if ($gp->canAssignGroup()) { ?>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" name="gID[]" value="<?php echo $g->getGroupID(); ?>"
+					<?php if (isset($_POST['gID']) && is_array($_POST['gID']) && in_array($g->getGroupID(), $_POST['gID'])) {
+					?> checked <?php } ?>>
+
+					<?php echo $g->getGroupDisplayName(); ?>
+				</label>
+			</div>
+		<?php }
+		} ?>
+
+		</div>
+    </fieldset>
+	<?php echo $token->output('submit');?>
+
+	<div class="ccm-dashboard-form-actions-wrapper">
+		<div class="ccm-dashboard-form-actions">
+			<a href="<?php echo View::url('/dashboard/users/search'); ?>" class="btn btn-default pull-left"><?php echo t('Cancel'); ?></a>
+			<?php echo Loader::helper("form")->submit('add', t('Add'), array('class' => 'btn btn-primary pull-right')); ?>
+		</div>
 	</div>
-
-    <div class="ccm-pane-footer">
-        <div class="ccm-buttons">
-            <input type="hidden" name="create" value="1" />
-            <? print $ih->submit(t('Add'), 'ccm-user-form', 'right', 'primary'); ?>
-        </div>	
-    </div>
-
 </form>
-    
-<?=Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper(false);?>

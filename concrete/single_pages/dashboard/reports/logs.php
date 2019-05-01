@@ -1,106 +1,168 @@
-<? 
-defined('C5_EXECUTE') or die("Access Denied.");
+<?php defined('C5_EXECUTE') or die('Access Denied.');
 
-// HELPERS
-$valt = Loader::helper('validation/token');
-$th = Loader::helper('text');
+$app = Concrete\Core\Support\Facade\Application::getFacadeApplication();
+$valt = $app->make('helper/validation/token');
+$th = $app->make('helper/text');
+if ($isReportEnabled) {
+    ?>
 
+<div class="ccm-dashboard-header-buttons">
+    <?php if (!isset($selectedChannel)) {
+        ?>
+        <a href="javascript:void(0)" class="btn btn-default btn-danger" onclick="clearAllChannelLogs()" ><?=t('Delete all'); ?></a>
+        <script>
+            clearAllChannelLogs = function() {
+                ConcreteAlert.confirm(
+                    <?= json_encode(t('Are you sure you want to clear all channel logs?')); ?>,
+                    function() {
+                        location.href = "<?= $controller->action('clear', $valt->generate()); ?>";
+                    },
+                    'btn-danger',
+                    <?= json_encode(t('Delete')); ?>
+                );
+            };
+        </script>
+    <?php
+    } ?>
+    <a id="ccm-export-results" class="btn btn-success" href="<?= $view->action('csv', $valt->generate()); ?>?<?=$query; ?>">
+        <i class='fa fa-download'></i> <?= t('Export to CSV'); ?>
+    </a>
+</div>
 
-// VARIABLES
-
-// Check if entries to show, assign to boolean var.
-$areEntries = count($entries) > 0 ? true : false;
-
-?>
-
-	<?=Loader::helper('concrete/dashboard')->getDashboardPaneHeaderWrapper(t('Logs'), false, false, false);?>
-    
-    <? if(!$areEntries) { ?>
-    
-    <div class="ccm-pane-body ccm-pane-body-footer">
-    
-    	<p><?=t('There are no log entries to show at the moment.')?></p>
-    
+<form role="form" action="<?=$controller->action('view'); ?>" class="ccm-search-fields">
+    <div class="form-group">
+        <?=$form->label('keywords', t('Search')); ?>
+        <div class="ccm-search-field-content">
+            <div class="ccm-search-main-lookup-field">
+                <i class="fa fa-search"></i>
+                <?=$form->search('keywords', ['placeholder' => t('Keywords')]); ?>
+                <button type="submit" class="ccm-search-field-hidden-submit" tabindex="-1"><?=t('Search'); ?></button>
+            </div>
+        </div>
     </div>
-    
-    <?=Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper(false);?>
-    
-    <? } else { ?>
-    
-    <div class="ccm-pane-options ccm-pane-options-permanent-search">
-    	<form method="post" id="ccm-log-search"  action="<?=$pageBase?>">
-        	<div class="row">
-                <div class="span5">
-                    <label for="keywords"><?=t('Keywords')?></label>
-                    <div class="input">
-                        <?=$form->text('keywords', $keywords, array('style'=>'width:180px;'))?>
-                    </div>
-                </div>
-                <div class="span6">
-                    <label for="logType"><?=t('Type')?></label>
-                    <div class="input">
-                        <?=$form->select('logType', $logTypes, array('style'=>'width:180px;'))?>
-                    <?=$form->submit('search',t('Search') )?>
-                    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <?=$form->label('channel', t('Channel')); ?>
+                <div class="ccm-search-field-content">
+                    <?=$form->select('channel', $channels); ?>
+                    <?php if (isset($selectedChannel)) {
+        ?>
+                        <a href="javascript:void(0)" class="btn btn-default btn-danger pull-right" onclick="clearSelectedChannelLogs()" style="margin-top: 30px;"><?=tc('%s is a channel', 'Clear all in %s', \Concrete\Core\Logging\Channels::getChannelDisplayName($selectedChannel)); ?></a>
+                        <script>
+                            clearSelectedChannelLogs = function() {
+                                ConcreteAlert.confirm(
+                                    <?= json_encode(t('Are you sure you want to clear the %s channel logs?', \Concrete\Core\Logging\Channels::getChannelDisplayName($selectedChannel))); ?>,
+                                    function() {
+                                        location.href = "<?= $controller->action('clear', $valt->generate(), $selectedChannel); ?>";
+                                    },
+                                    'btn-danger',
+                                    <?= json_encode(t('Delete')); ?>
+                                );
+                            };
+                        </script>
+                    <?php
+    } ?>
                 </div>
             </div>
-        </form>
+        </div>
+        <div class="col-md-4">
+            <?=$form->label('date_from', t('Date From')); ?>
+            <div class="ccm-search-field-content">
+                <?= $wdt->date('date_from', $date_from); ?>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <?=$form->label('date_to', t('Date To')); ?>
+            <div class="ccm-search-field-content">
+                <?= $wdt->date('date_to', $date_to); ?>
+            </div>
+        </div>
     </div>
-        
-	<div class="ccm-pane-body <? if(!$paginator || !strlen($paginator->getPages())>0) { ?>ccm-pane-body-footer <? } ?>">
 
-        <table class="table table-bordered">
-        	<thead>
+    <div class="form-group">
+        <?=$form->label('level', t('Level')); ?>
+        <div class="ccm-search-field-content">
+            <?=$form->selectMultiple('level', $levels, array_keys($levels)); ?>
+        </div>
+    </div>
+
+    <div class="ccm-search-fields-submit">
+        <button type="submit" class="btn btn-primary pull-right"><?=t('Search'); ?></button>
+    </div>
+</form>
+
+<div class="ccm-dashboard-content-full">
+    <div class="table-responsive">
+        <table class="ccm-search-results-table selectable">
+            <thead>
                 <tr>
-                    <th class="subheaderActive"><?=t('Date/Time')?></th>
-                    <th class="subheader"><?=t('Type')?></th>
-                    <th class="subheader"><?=t('User')?></th>
-                    <th class="subheader"><input style="float: right" class="btn error btn-mini" type="button" onclick="if (confirm('<?=t("Are you sure you want to clear this log?")?>')) { location.href='<?=$this->url('/dashboard/reports/logs', 'clear', $valt->generate(), $_POST['logType'])?>'}" value="<?=t('Clear Log')?>" /><?=t('Text')?></th>
+                    <th class="<?=$list->getSearchResultsClass('logID'); ?>"><a href="<?=$list->getSortByURL('logID', 'desc'); ?>"><?=t('Date/Time'); ?></a></th>
+                    <th class="<?=$list->getSearchResultsClass('level'); ?>"><a href="<?=$list->getSortByURL('level', 'desc'); ?>"><?=t('Level'); ?></a></th>
+                    <th><span><?=t('Channel'); ?></span></th>
+                    <th><span><?=t('User'); ?></span></th>
+                    <th><span><?=t('Message'); ?></span></th>
+                    <th></th>
                 </tr>
-			</thead>
+            </thead>
             <tbody>
-				<? foreach($entries as $ent) { ?>
+            <?php foreach ($entries as $ent) {
+        ?>
                 <tr>
-                    <td valign="top" style="white-space: nowrap" class="active"><?=date(DATE_APP_GENERIC_TS, strtotime($ent->getTimestamp('user')))?><? if (date('m-d-y') != date('m-d-y', strtotime($ent->getTimestamp('user')))) { ?>
-                        <?=t(' at ')?><?=date(DATE_APP_GENERIC_MDY, strtotime($ent->getTimestamp('user')))?>
-                    <? } ?></td>
-                    <td valign="top"><strong><?=$ent->getType()?></strong></td>
+                    <td valign="top" style="white-space: nowrap" class="active"><?php echo $ent->getDisplayTimestamp(); ?></td>
+                    <td valign="top" style="text-align: center"><?=$ent->getLevelIcon(); ?></td>
+                    <td valign="top" style="white-space: nowrap"><?=$ent->getChannelDisplayName(); ?></td>
                     <td valign="top"><strong><?php
-                    if($ent->getUserID() == NULL){
-                        echo t("Guest");
-                    }
-                    else{
-                        $u = User::getByUserID($ent->getUserID());
-                        echo $u->getUserName();
-                    }
-                    ?></strong></td>
-                    <td style="width: 100%"><?=$th->makenice($ent->getText())?></td>
+                    $uID = $ent->getUserID();
+        if (empty($uID)) {
+            echo t('Guest');
+        } else {
+            $u = User::getByUserID($uID);
+            if (is_object($u)) {
+                echo $u->getUserName();
+            } else {
+                echo tc('Deleted user', 'Deleted (id: %s)', $uID);
+            }
+        } ?></strong></td>
+                    <td style="width: 100%"><?=$th->makenice($ent->getMessage()); ?></td>
+                    <td valign="top" style="text-align: center; padding: 15px;"><a href="javascript:void(0)" class="btn btn-default btn-xs btn-danger" onclick="deleteLog(<?=$ent->getID(); ?>)"><?=t('Delete'); ?></a></td>
                 </tr>
-                <? } ?>
-			</tbody>
-		</table>
-    
+            <?php
+    } ?>
+            </tbody>
+        </table>
     </div>
+
     <!-- END Body Pane -->
-    
-	<? if($paginator && strlen($paginator->getPages())>0){ ?>
-    <div class="ccm-pane-footer">
-        
-        	<div class="pagination">
-              <ul>
-                  <li class="prev"><?=$paginator->getPrevious()?></li>
-                  
-                  <? // Call to pagination helper's 'getPages' method with new $wrapper var ?>
-                  <?=$paginator->getPages('li')?>
-                  
-                  <li class="next"><?=$paginator->getNext()?></li>
-              </ul>
-			</div>
+    <?=$list->displayPagingV2(); ?>
+</div>
+
+<script>
+    $(function() {
+        $('#level').selectize({
+            plugins: ['remove_button']
+        });
+    });
+
+    deleteLog = function(logID) {
+        ConcreteAlert.confirm(
+            <?= json_encode(t('Are you sure you want to delete this log?')); ?>,
+            function() {
+                location.href = "<?= $controller->action('deleteLog'); ?>/" + logID + "/<?= $valt->generate(); ?>";
+            },
+            'btn-danger',
+            <?= json_encode(t('Delete')); ?>
+        );
+    };
+</script>
 
 
-	</div>
-        <? } // PAGINATOR ?>
-    
-    <?=Loader::helper('concrete/dashboard')->getDashboardPaneFooterWrapper(false);?>
-    
-    <? } ?>
+<?php
+} else {
+        ?>
+
+    <p><?=t('The dashboard log report has been disabled in your logging configuration.'); ?></p>
+
+<?php
+    }
