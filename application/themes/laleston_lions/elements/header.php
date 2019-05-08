@@ -29,20 +29,19 @@
 ?>
 <!DOCTYPE html>
 <head>
-<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NGXPR88');</script>
-<!-- End Google Tag Manager -->
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-NGXPR88');</script>
+        <!-- End Google Tag Manager -->
 
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Laleston Lions FC</title>
         <?php Loader::element('header_required'); ?>
         <!--css3-mediaqueries-js - http://code.google.com/p/css3-mediaqueries-js/ - Enables media queries in some unsupported browsers--> 
-        <script type="text/javascript" src="<?php echo $this->getThemePath(); ?>/js/css3-mediaqueries.js"></script>
         
         <?php if ($c->getAttribute('no_index')) { ?>
         <meta name="robots" content="NOINDEX" />
@@ -55,6 +54,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css?family=Viga" rel="stylesheet">
         <link rel="stylesheet" href="<?php echo $this->getThemePath(); ?>/css/site.css?v1.01">
+        <script type="text/javascript" src="<?=ASSETS_URL_JAVASCRIPT?>/jquery.js"></script>
 
     </head>
     <body>
