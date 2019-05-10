@@ -1,8 +1,4 @@
-<?php
-    defined('C5_EXECUTE') or die("Access Denied.");
-    Loader::element('footer_required');
-?>
-    <script type="text/javascript" src="<?php echo $this->getThemePath(); ?>/js/min/site-min.js"></script>        
+
     <footer>
 
         <div class="row">
@@ -36,6 +32,9 @@
         </div>
 
 
+    <script src="<?php echo $view->getThemePath(); ?>/js/min/site-min.js"></script>        
+    <?php Loader::element('footer_required'); ?>
     </footer>
     </body>
+
 </html>

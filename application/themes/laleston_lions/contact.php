@@ -1,6 +1,6 @@
-<?php 
-    defined('C5_EXECUTE') or die("Access Denied.");
-    $this->inc('elements/header.php');    
+<?php
+    defined('C5_EXECUTE') or die('Access Denied.');
+    $view->inc('elements/header.php');
     
     if($c->getAttribute("banner_image")){
         $bannerImage = $c->getAttribute("banner_image")->getRelativePath();
@@ -32,10 +32,10 @@
 
         <div class="contact-form">
 
-            <?php 
-                $a = new Area('Introduction');
-                $a->display($c);
-            ?>
+            <h2>FANCY A FRIENDLY?</h2>
+            <h2>SPONSORSHIP OPPORTUNITY?</h2>
+            <h2>GET IN TOUCH.</h2>
+
 
             <div class="small-12 medium-10 large-8 column medium-centered">
 
@@ -109,11 +109,10 @@
 
             </div>
 
-            <?php 
-                $a = new Area('Contact Details');
-                $a->display($c);
-            ?>
-
+            <h3>ADDRESS: <a href="https://www.google.com/maps/place/Unnamed+Road,+Bridgend+CF31+3PN/@51.4977738,-3.5910763,17z/data=!3m1!4b1!4m5!3m4!1s0x486e6dd3d9861fa7:0xde2699ca4db81a4e!8m2!3d51.497334!4d-3.5891269" target="_blank">
+                NEWBRIDGE FIELDS, BRIDGEND, CF31 3PN</a></h3>
+            <h3>EMAIL: <a href="mailto:lalestonlions@gmail.com" target="_blank">LALESTONLIONS@GMAIL.COM</h3>
+            <h3>TEL: <a href="tel:07525081817">07525 081 817</a></h3>
 
             <div class="football-vector">
                 <img src="<?php echo $this->getThemePath(); ?>/images/ball-vector.png" />
@@ -123,7 +122,7 @@
 
     </div>
 
-    <?php 
-    $this->inc('elements/footer.php');    
+<?php 
+    $view->inc('elements/footer.php');
 ?>
     

@@ -1,34 +1,19 @@
 <?php
-    defined('C5_EXECUTE') or die("Access Denied.");
-    
-    if ($c->getCollectionAttributeValue('replace_link_with_newest_child')) {
-        Loader::model('page_list');
-        
-        $pl = new PageList();
-        $pl->setItemsPerPage(1);
-        $pl->sortByPublicDateDescending();
-        $pl->filterByParentID($c->getCollectionID());
-        $pl->filter('cvDatePublic', date('Y-m-d H:i:s'), '<');
-        
-        if (($pages = $pl->getPage())) {
-            $nh = Loader::helper('navigation');
-            header('Location: '.$nh->getCollectionURL($pages[0]));
-            exit();
-        }
-    }
 
-    if ($c->getAttribute('replace_link_with_first_in_nav')) {
-        $nh = Loader::helper('navigation');
-        
-        $child = $c->getFirstChild();
-        if ($child instanceof Page) {
-            header('Location: '.$nh->getLinkToCollection($child));
-            exit();
-        }
-    }
+use Concrete\Core\Multilingual\Page\Section\Section;
+
+defined('C5_EXECUTE') or die('Access Denied.');
+$language = Localization::activeLanguage();
 ?>
 <!DOCTYPE html>
-<head>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="<?php echo $language; ?>"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="<?php echo $language; ?>"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="<?php echo $language; ?>"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="<?php echo $language; ?>"> <!--<![endif]-->
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Laleston Lions FC</title>
         <!-- Google Tag Manager -->
         <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -37,32 +22,23 @@
         })(window,document,'script','dataLayer','GTM-NGXPR88');</script>
         <!-- End Google Tag Manager -->
 
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Laleston Lions FC</title>
-        <?php Loader::element('header_required'); ?>
-        <!--css3-mediaqueries-js - http://code.google.com/p/css3-mediaqueries-js/ - Enables media queries in some unsupported browsers--> 
-        
-        <?php if ($c->getAttribute('no_index')) { ?>
-        <meta name="robots" content="NOINDEX" />
-        <?php } ?>
-        
-        <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-        <?php if (isset($_COOKIE['cookieComplianceStatus']) && $_COOKIE['cookieComplianceStatus'] == 'true') { ?>
-        <script>document.cookie='resolution='+Math.max(screen.width,screen.height)+'; path=/';</script>
-        <?php } ?>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <?php
+        Loader::element('header_required', [
+            'pageTitle' => isset($pageTitle) ? $pageTitle : '',
+            'pageDescription' => isset($pageDescription) ? $pageDescription : '',
+            'pageMetaKeywords' => isset($pageMetaKeywords) ? $pageMetaKeywords : ''
+        ]);
+        ?>
+
+        <link href="<?php echo $view->getThemePath(); ?>/css/site.css" type="text/css" rel="stylesheet" media="screen, print, projection" />
         <link href="https://fonts.googleapis.com/css?family=Viga" rel="stylesheet">
-        <link rel="stylesheet" href="<?php echo $this->getThemePath(); ?>/css/site.css?v1.01">
-        <script type="text/javascript" src="<?=ASSETS_URL_JAVASCRIPT?>/jquery.js"></script>
 
     </head>
-    <body>
-    
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NGXPR88"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NGXPR88"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
 
     <svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
 

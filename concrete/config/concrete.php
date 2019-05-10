@@ -1011,7 +1011,8 @@ return [
              *
              * @var bool|string DENY, SAMEORIGIN, ALLOW-FROM uri
              */
-            'x_frame_options' => 'SAMEORIGIN',
+            // 'x_frame_options' => 'SAMEORIGIN',
+            'x_frame_options' => 'ALLOW-FROM http://lalestonlions.co.uk',
         ],
     ],
 

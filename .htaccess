@@ -1,11 +1,19 @@
+RedirectMatch 404 /\.git
 
-# -- concrete5 urls start --
 <IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteBase /
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME}/index.html !-f
-RewriteCond %{REQUEST_FILENAME}/index.php !-f
-RewriteRule . index.php [L]
+    RewriteEngine On
+    RewriteBase /
+    
+    #UPDATE THIS WITH THE PATH TO THE THEME IMAGES
+    RewriteCond %{REQUEST_URI} !themes
+    RewriteRule \.(?:jpe?g|gif|png)$ libraries/ai_cache.php [L]
+    
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php/$1 [L]
 </IfModule>
-# -- concrete5 urls end --
+
+<IfModule mod_mime.c>
+    AddType image/svg+xml .svg
+    AddType image/svg+xml .svgz
+</IfModule>
