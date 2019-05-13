@@ -20,11 +20,20 @@
 <div class="team-container global-margin">
 
     <ul class="small-block-grid-1 medium-block-grid-2 large-block-grid-4 team-member-container">
-        
-        <?php 
-            $a = new Area('Main Area Block');
-            $a->display($c);
-        ?>
+            
+        <li class="slide-container">
+
+            <div class="team-member" style="background-image: url('/application/themes/laleston_lions/images/player-placeholder.jpg');">
+                <div class="player-details">
+                    <h4 class="position">GK</h4>
+                    <p class="name">Owain Evans</p>
+                    <p class="name">Matches Played: 0</p>
+                    <p class="name">Goals Scored: 0</p>
+                    <p class="name">Fantasy Points: 0</p>
+                </div>
+            </div>
+            
+        </li>
         
     <ul>
 
